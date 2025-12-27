@@ -95,7 +95,8 @@ function CoursePlans() {
             </li>
           </ul>
 
-          <button className="w-full bg-white text-slate-900 py-3.5 font-semibold hover:bg-slate-50 transition-all relative z-10" aria-label="Välj Premium">\n            Välj Premium →
+          <button className="w-full bg-white text-slate-900 py-3.5 font-semibold hover:bg-slate-50 transition-all relative z-10" aria-label="Välj Premium">
+            Välj Premium
           </button>
         </div>
       </div>

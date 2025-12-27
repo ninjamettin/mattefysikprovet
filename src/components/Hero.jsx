@@ -42,7 +42,7 @@ function Hero() {
   }, [titleChars, bullet1Chars, bullet2Chars, bullet3Chars])
 
   const sentences = [
-    { text: "Varför ska du inte doktorera och bli en ", highlight: "fysiker" },
+    { text: "Varför ska du inte doktorera och bli en ", highlight: "fysiker?" },
     { text: "Bli en ", highlight: "datortekniker", after: " och programmera nästa ChatGPT" },
     { text: "Vill du bli en ", highlight: "civilingenjör", after: " och designa framtidens städer?" },
     { text: "Drömmer du om att bli en ", highlight: "rymdingenjör", after: " på SpaceX?" },
@@ -110,7 +110,7 @@ function Hero() {
       <div className="relative z-10 max-w-[1400px] mx-auto px-8 md:px-12 w-full" style={{perspective: '2000px'}}>
         <div className="max-w-5xl bg-white/60 backdrop-blur-xl p-12 rounded-2xl shadow-2xl border border-slate-200/50 relative overflow-hidden" style={{animation: 'rotateInX 1s ease-out forwards'}}>
           {/* Main Headline - Left aligned, Two Lines */}
-          <h1 className="text-5xl md:text-7xl font-black tracking-tight text-slate-900 mb-10 leading-[1.1]">
+          <h1 className="text-5xl md:text-7xl font-black tracking-tight text-slate-900 mb-10 leading-[1.1] min-h-[120px] md:min-h-[140px]">
             {titleLine1.substring(0, Math.min(titleChars, titleLine1.length))}<br />
             {titleChars > titleLine1.length && titleLine2.substring(0, titleChars - titleLine1.length)}
           </h1>
