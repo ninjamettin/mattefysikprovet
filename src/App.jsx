@@ -1,11 +1,38 @@
 import { useEffect } from 'react'
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom'
 import Navigation from './components/Navigation'
 import Hero from './components/Hero'
-import AboutExam from './components/AboutExam'
 import Features from './components/Features'
 import CoursePlans from './components/CoursePlans'
 import Testimonials from './components/Testimonials'
+import WhatIsThis from './components/WhatIsThis'
+import AboutFounder from './components/AboutFounder'
 import './App.css'
+
+function HomePage() {
+  return (
+    <>
+      <Hero />
+      <Features />
+      <CoursePlans />
+      <Testimonials />
+    </>
+  )
+}
+
+function ScrollToTop() {
+  const location = useLocation()
+  
+  useEffect(() => {
+    window.scrollTo(0, 0)
+    // Re-initialize Lucide icons on route change
+    if (window.lucide) {
+      setTimeout(() => window.lucide.createIcons(), 100)
+    }
+  }, [location.pathname])
+  
+  return null
+}
 
 function App() {
   useEffect(() => {
@@ -19,19 +46,29 @@ function App() {
   }, [])
 
   return (
-    <div className="bg-[#A4C4E3] min-h-screen text-slate-800 antialiased overflow-x-hidden">
-      {/* Background Gradient */}
-      <div className="fixed inset-0 z-[-1] bg-gradient-to-b from-[#A4C4E3] via-[#C5D8EB] to-[#EBE6DD] pointer-events-none"></div>
+    <Router>
+      <div className="bg-[#FAF9F6] min-h-screen text-slate-900 antialiased overflow-x-hidden relative">
+        {/* Animated Background */}
+        <div className="fixed inset-0 z-[-1] bg-gradient-to-br from-[#FAF9F6] via-[#F5F3EF] to-[#EAE7E0]"></div>
+        
+        {/* Geometric 3D Elements */}
+        <div className="fixed inset-0 z-[-1] overflow-hidden pointer-events-none">
+          <div className="absolute top-1/4 left-1/4 w-32 h-32 border border-slate-200/30 rotate-45 animate-float"></div>
+          <div className="absolute top-3/4 right-1/4 w-24 h-24 border-2 border-emerald-300/20 rounded-full animate-float-delayed"></div>
+          <div className="absolute top-1/2 right-1/3 w-20 h-20 bg-gradient-to-br from-slate-100/20 to-transparent backdrop-blur-sm rotate-12 animate-rotate-slow"></div>
+        </div>
 
-      <Navigation />
-      <Hero />
-      <AboutExam />
-      <Features />
-      <CoursePlans />
-      <Testimonials />
+        <ScrollToTop />
+        <Navigation />
+        
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/vad-ar-det-har" element={<WhatIsThis />} />
+          <Route path="/om-grundaren" element={<AboutFounder />} />
+        </Routes>
       
-      {/* Footer */}
-      <footer id="kontakt" className="bg-slate-900 text-white py-20 px-6 md:px-12">
+        {/* Footer */}
+        <footer id="kontakt" className="bg-slate-900 text-white py-20 px-6 md:px-12">
         <div className="max-w-[1400px] mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
             <div>
@@ -123,7 +160,8 @@ function App() {
           </div>
         </div>
       </footer>
-    </div>
+      </div>
+    </Router>
   )
 }
 
