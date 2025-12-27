@@ -1,89 +1,133 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 function Hero() {
-  const [loading, setLoading] = useState(false)
+  const [currentSentence, setCurrentSentence] = useState('')
+  const [currentIndex, setCurrentIndex] = useState(0)
+  const [isDeleting, setIsDeleting] = useState(false)
+  const [sentenceIdx, setSentenceIdx] = useState(0)
 
-  const handleGetStarted = () => {
-    setLoading(true)
-    // Simulate navigation/action
-    setTimeout(() => setLoading(false), 1500)
-  }
+  const sentences = [
+    { text: "Varför ska du inte doktorera och bli en ", highlight: "fysiker" },
+    { text: "Bli en ", highlight: "datortekniker", after: " och programmera nästa ChatGPT" },
+    { text: "Vill du bli en ", highlight: "civilingenjör", after: " och designa framtidens städer?" },
+    { text: "Drömmer du om att bli en ", highlight: "rymdingenjör", after: " på SpaceX?" },
+    { text: "Kan du se dig som en ", highlight: "maskiningenjör", after: " som bygger robotar?" },
+    { text: "Varför inte bli en ", highlight: "elektroingenjör", after: " och utveckla AI-chips?" },
+    { text: "Tänk dig att vara en ", highlight: "bioteknolog", after: " som botar cancer" },
+    { text: "Bli en ", highlight: "energiingenjör", after: " och rädda planeten" },
+    { text: "Se dig som en ", highlight: "mjukvaruutvecklare", after: " på Google" },
+    { text: "Kanske är du en framtida ", highlight: "kärnfysiker", after: " på CERN?" },
+    { text: "Vill du bli en ", highlight: "flygteknikingenjör", after: " hos Airbus?" },
+    { text: "Drömmer du om att vara en ", highlight: "nanoteknikforskare", after: "?" },
+    { text: "Bli en ", highlight: "AI-ingenjör", after: " och forma framtiden" },
+    { text: "Se dig som en ", highlight: "medicintekniker", after: " som räddar liv" },
+    { text: "Varför inte bli en ", highlight: "automationsingenjör", after: "?" },
+    { text: "Tänk dig att vara en ", highlight: "kvantdataforskare", after: "" },
+    { text: "Bli en ", highlight: "kemitekniker", after: " på ett läkemedelsföretag" },
+    { text: "Vill du vara en ", highlight: "materialvetare", after: " och uppfinna nya material?" },
+    { text: "Drömmer du om att bli en ", highlight: "cybersäkerhetsexpert", after: "?" },
+    { text: "Kan du se dig som en ", highlight: "datateknikingenjör", after: " på Apple?" }
+  ];
+
+  useEffect(() => {
+    const currentSentenceData = sentences[sentenceIdx];
+    const fullText = currentSentenceData.text + currentSentenceData.highlight + (currentSentenceData.after || '');
+    
+    const typingSpeed = isDeleting ? 30 : 80;
+    const pauseAfterComplete = 2000;
+    const pauseBeforeDelete = 1000;
+
+    if (!isDeleting && currentIndex < fullText.length) {
+      const timer = setTimeout(() => {
+        setCurrentSentence(fullText.substring(0, currentIndex + 1));
+        setCurrentIndex(currentIndex + 1);
+      }, typingSpeed);
+      return () => clearTimeout(timer);
+    } else if (!isDeleting && currentIndex === fullText.length) {
+      const timer = setTimeout(() => {
+        setIsDeleting(true);
+      }, pauseBeforeDelete);
+      return () => clearTimeout(timer);
+    } else if (isDeleting && currentIndex > 0) {
+      const timer = setTimeout(() => {
+        setCurrentSentence(fullText.substring(0, currentIndex - 1));
+        setCurrentIndex(currentIndex - 1);
+      }, typingSpeed);
+      return () => clearTimeout(timer);
+    } else if (isDeleting && currentIndex === 0) {
+      setIsDeleting(false);
+      setSentenceIdx((sentenceIdx + 1) % sentences.length);
+    }
+  }, [currentIndex, isDeleting, sentenceIdx]);
 
   return (
-    <main className="max-w-[1400px] mx-auto px-4 mt-16 md:mt-24 flex flex-col items-center text-center perspective-container">
-      {/* Trust Badge - animated entrance */}
-      <div className="inline-flex items-center gap-2 bg-green-50 text-green-700 px-4 py-2 rounded-full text-sm font-medium mb-6 animate-in fade-in slide-in-from-top-3 duration-500 border border-green-200/50">
-        <i data-lucide="check-circle" className="w-4 h-4"></i>
-        10 000+ studenter har klarat provet med oss
-      </div>
-
-      {/* Main Headline - improved typography */}
-      <h1 className="text-5xl md:text-7xl font-medium tracking-tight text-slate-900 mb-6 max-w-4xl leading-[1.1] animate-in fade-in slide-in-from-bottom-4 duration-700">
-        Besegra matematik- och <br className="hidden md:block" /> fysikprovet
-      </h1>
+    <main className="relative min-h-[90vh] flex items-center overflow-hidden">
+      {/* Background Image - High Opacity */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-95"
+        style={{ backgroundImage: "url('/src/assets/mattefysik_landing.png')" }}
+      ></div>
       
-      {/* Subheadline - better contrast */}
-      <p className="text-lg md:text-xl text-slate-700 max-w-2xl mb-10 leading-relaxed font-normal animate-in fade-in slide-in-from-bottom-5 duration-700 delay-100">
-        Allt du behöver för att klara matematik- och fysikprovet. Få tillgång till övningsuppgifter, videogenomgångar och expertförklaringar som hjälper dig nå ditt mål.
-      </p>
-
-      {/* Enhanced CTAs with clear hierarchy */}
-      <div className="flex flex-col sm:flex-row items-center gap-4 mb-12 animate-in fade-in slide-in-from-bottom-6 duration-700 delay-200">
-        <button 
-          onClick={handleGetStarted}
-          disabled={loading}
-          className="group bg-slate-900 text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-slate-800 hover:scale-105 active:scale-95 transition-all shadow-2xl shadow-slate-900/30 hover:shadow-slate-900/40 min-w-[220px] relative overflow-hidden disabled:opacity-70 disabled:cursor-not-allowed"
-          aria-label="Kom igång gratis"
-        >
-          {loading ? (
-            <span className="flex items-center justify-center gap-2">
-              <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+      {/* Subtle overlay for text readability */}
+      <div className="absolute inset-0 bg-gradient-to-r from-white/40 via-white/20 to-transparent"></div>
+      
+      <div className="relative z-10 max-w-[1400px] mx-auto px-8 md:px-12 w-full">
+        <div className="max-w-4xl backdrop-blur-sm bg-white/30 p-10 rounded-3xl shadow-2xl border border-white/40">
+          {/* Main Headline - Left aligned */}
+          <h1 className="text-5xl md:text-7xl font-black tracking-tight text-slate-900 mb-10 leading-[1.1]">
+            Dominera matematik och fysikprovet
+          </h1>
+          
+          {/* Three Bullet Points - Clean Checkmarks */}
+          <div className="space-y-5 mb-14">
+            <div className="flex items-start gap-4 group">
+              <svg className="flex-shrink-0 w-7 h-7 text-green-600 mt-1 transition-transform group-hover:scale-110" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
               </svg>
-              Laddar...
-            </span>
-          ) : (
-            <>
-              Kom igång gratis
-              <span className="inline-block transition-transform group-hover:translate-x-1 ml-2">→</span>
-            </>
-          )}
-        </button>
-        <button className="bg-white/90 backdrop-blur-sm text-slate-900 px-8 py-4 rounded-full text-lg font-medium hover:bg-white hover:scale-105 active:scale-95 transition-all min-w-[220px] border-2 border-slate-200 hover:border-slate-300 shadow-lg hover:shadow-xl" aria-label="Se kurser">
-          Se kurser
-        </button>
-      </div>
+              <p className="text-lg md:text-xl text-slate-900 font-semibold leading-relaxed">
+                Grundad av Teknisk Fysiker
+              </p>
+            </div>
+            
+            <div className="flex items-start gap-4 group">
+              <svg className="flex-shrink-0 w-7 h-7 text-green-600 mt-1 transition-transform group-hover:scale-110" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+              <p className="text-lg md:text-xl text-slate-900 font-semibold leading-relaxed">
+                Coaching och lösningsförslag för ALLA gamla prov + våra egna 
+              </p>
+            </div>
+            
+            <div className="flex items-start gap-4 group">
+              <svg className="flex-shrink-0 w-7 h-7 text-green-600 mt-1 transition-transform group-hover:scale-110" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+              <p className="text-lg md:text-xl text-slate-900 font-semibold leading-relaxed">
+                Ingen annan än oss erbjuder denna tjänst i Sverige. 
+              </p>
+            </div>
+          </div>
 
-      {/* Stats with better visual separation */}
-      <div className="grid grid-cols-3 gap-8 md:gap-16 mb-20 max-w-3xl animate-in fade-in zoom-in-95 duration-700 delay-300">
-        <div className="group">
-          <div className="text-4xl md:text-5xl font-bold bg-gradient-to-br from-slate-900 to-slate-700 bg-clip-text text-transparent mb-2 group-hover:scale-110 transition-transform">10 000+</div>
-          <div className="text-sm md:text-base text-slate-600 font-medium">Nöjda studenter</div>
-        </div>
-        <div className="group border-x border-slate-300/50 px-4">
-          <div className="text-4xl md:text-5xl font-bold bg-gradient-to-br from-slate-900 to-slate-700 bg-clip-text text-transparent mb-2 group-hover:scale-110 transition-transform">5 000+</div>
-          <div className="text-sm md:text-base text-slate-600 font-medium">Övningsuppgifter</div>
-        </div>
-        <div className="group">
-          <div className="text-4xl md:text-5xl font-bold bg-gradient-to-br from-slate-900 to-slate-700 bg-clip-text text-transparent mb-2 group-hover:scale-110 transition-transform">200+</div>
-          <div className="text-sm md:text-base text-slate-600 font-medium">Videogenomgångar</div>
-        </div>
-      </div>
-
-      {/* Trust Signals */}
-      <div className="flex flex-wrap items-center justify-center gap-8 mb-12 opacity-60 animate-in fade-in duration-700 delay-500">
-        <div className="flex items-center gap-2 text-sm text-slate-600">
-          <i data-lucide="shield-check" className="w-4 h-4"></i>
-          <span>100% säkert</span>
-        </div>
-        <div className="flex items-center gap-2 text-sm text-slate-600">
-          <i data-lucide="clock" className="w-4 h-4"></i>
-          <span>Tillgängligt 24/7</span>
-        </div>
-        <div className="flex items-center gap-2 text-sm text-slate-600">
-          <i data-lucide="award" className="w-4 h-4"></i>
-          <span>Certifierade handledare</span>
+          {/* Typewriter Animation - Professional Design */}
+          <div className="min-h-[100px] bg-slate-900/95 backdrop-blur-md rounded-2xl p-6 shadow-xl border border-slate-700">
+            <p className="text-xl md:text-2xl text-white leading-relaxed font-light">
+              {currentSentence.split('').map((char, idx) => {
+                const currentData = sentences[sentenceIdx];
+                const highlightStart = currentData.text.length;
+                const highlightEnd = highlightStart + currentData.highlight.length;
+                
+                if (idx >= highlightStart && idx < highlightEnd) {
+                  return (
+                    <span key={idx} className="text-emerald-400 font-bold">
+                      {char}
+                    </span>
+                  );
+                }
+                return <span key={idx}>{char}</span>;
+              })}
+              <span className="inline-block w-0.5 h-6 bg-emerald-400 ml-1 animate-pulse"></span>
+            </p>
+          </div>
         </div>
       </div>
     </main>
