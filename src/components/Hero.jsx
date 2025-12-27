@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import bgImage from '../assets/mattefysik_landing.png'
 
 function Hero() {
   const [currentSentence, setCurrentSentence] = useState('')
@@ -65,7 +66,7 @@ function Hero() {
       {/* Background Image - High Opacity */}
       <div 
         className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-95"
-        style={{ backgroundImage: "url('/src/assets/mattefysik_landing.png')" }}
+        style={{ backgroundImage: `url(${bgImage})` }}
       ></div>
       
       {/* Subtle overlay for text readability */}
