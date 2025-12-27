@@ -34,9 +34,10 @@ function Hero() {
     const currentSentenceData = sentences[sentenceIdx];
     const fullText = currentSentenceData.text + currentSentenceData.highlight + (currentSentenceData.after || '');
     
-    const typingSpeed = isDeleting ? 30 : 80;
-    const pauseAfterComplete = 2000;
-    const pauseBeforeDelete = 1000;
+    // Decaying typing speed - starts fast (20ms), ends slow (120ms)
+    const progress = currentIndex / fullText.length;
+    const typingSpeed = isDeleting ? 30 : 20 + (progress * 100); // Easing: 20ms -> 120ms
+    const pauseBeforeDelete = 1500;
 
     if (!isDeleting && currentIndex < fullText.length) {
       const timer = setTimeout(() => {
@@ -74,60 +75,63 @@ function Hero() {
       
       <div className="relative z-10 max-w-[1400px] mx-auto px-8 md:px-12 w-full">
         <div className="max-w-4xl backdrop-blur-sm bg-white/30 p-10 rounded-3xl shadow-2xl border border-white/40">
-          {/* Main Headline - Left aligned */}
+          {/* Main Headline - Left aligned, Two Lines */}
           <h1 className="text-5xl md:text-7xl font-black tracking-tight text-slate-900 mb-10 leading-[1.1]">
-            Dominera matematik och fysikprovet
+            Dominera<br />
+            matematik och fysikprovet
           </h1>
           
-          {/* Three Bullet Points - Clean Checkmarks */}
+          {/* Three Bullet Points - Bigger, Sharper Checkmarks */}
           <div className="space-y-5 mb-14">
-            <div className="flex items-start gap-4 group">
-              <svg className="flex-shrink-0 w-7 h-7 text-green-600 mt-1 transition-transform group-hover:scale-110" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+            <div className="flex items-center gap-5 group">
+              <svg className="flex-shrink-0 w-10 h-10 text-green-600 transition-transform group-hover:scale-110" fill="none" stroke="currentColor" strokeWidth="3.5" viewBox="0 0 24 24">
+                <path strokeLinecap="square" strokeLinejoin="miter" d="M5 13l4 4L19 7" />
               </svg>
-              <p className="text-lg md:text-xl text-slate-900 font-semibold leading-relaxed">
+              <p className="text-lg md:text-xl text-slate-900 font-semibold leading-tight">
                 Grundad av Teknisk Fysiker
               </p>
             </div>
             
-            <div className="flex items-start gap-4 group">
-              <svg className="flex-shrink-0 w-7 h-7 text-green-600 mt-1 transition-transform group-hover:scale-110" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+            <div className="flex items-center gap-5 group">
+              <svg className="flex-shrink-0 w-10 h-10 text-green-600 transition-transform group-hover:scale-110" fill="none" stroke="currentColor" strokeWidth="3.5" viewBox="0 0 24 24">
+                <path strokeLinecap="square" strokeLinejoin="miter" d="M5 13l4 4L19 7" />
               </svg>
-              <p className="text-lg md:text-xl text-slate-900 font-semibold leading-relaxed">
-                Coaching och lösningsförslag för ALLA gamla prov + våra egna 
+              <p className="text-lg md:text-xl text-slate-900 font-semibold leading-tight">
+                Lösningsförslag till ALLA gamla officiella prov + våra
               </p>
             </div>
             
-            <div className="flex items-start gap-4 group">
-              <svg className="flex-shrink-0 w-7 h-7 text-green-600 mt-1 transition-transform group-hover:scale-110" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+            <div className="flex items-center gap-5 group">
+              <svg className="flex-shrink-0 w-10 h-10 text-green-600 transition-transform group-hover:scale-110" fill="none" stroke="currentColor" strokeWidth="3.5" viewBox="0 0 24 24">
+                <path strokeLinecap="square" strokeLinejoin="miter" d="M5 13l4 4L19 7" />
               </svg>
-              <p className="text-lg md:text-xl text-slate-900 font-semibold leading-relaxed">
-                Ingen annan än oss erbjuder denna tjänst i Sverige. 
+              <p className="text-lg md:text-xl text-slate-900 font-semibold leading-tight">
+                25+ av våra perfekta kopior för att kunna träna många fler gånger istället för bara få antal gamla prov
               </p>
             </div>
           </div>
 
-          {/* Typewriter Animation - Professional Design */}
-          <div className="min-h-[100px] bg-slate-900/95 backdrop-blur-md rounded-2xl p-6 shadow-xl border border-slate-700">
-            <p className="text-xl md:text-2xl text-white leading-relaxed font-light">
-              {currentSentence.split('').map((char, idx) => {
-                const currentData = sentences[sentenceIdx];
-                const highlightStart = currentData.text.length;
-                const highlightEnd = highlightStart + currentData.highlight.length;
-                
-                if (idx >= highlightStart && idx < highlightEnd) {
-                  return (
-                    <span key={idx} className="text-emerald-400 font-bold">
-                      {char}
-                    </span>
-                  );
-                }
-                return <span key={idx}>{char}</span>;
-              })}
-              <span className="inline-block w-0.5 h-6 bg-emerald-400 ml-1 animate-pulse"></span>
-            </p>
+          {/* Typewriter Animation - Optimized Height & Cursor */}
+          <div className="bg-slate-900/95 backdrop-blur-md rounded-2xl px-6 py-4 shadow-xl border border-slate-700">
+            <div className="flex items-center min-h-[32px]">
+              <p className="text-xl md:text-2xl text-white font-light leading-none">
+                {currentSentence.split('').map((char, idx) => {
+                  const currentData = sentences[sentenceIdx];
+                  const highlightStart = currentData.text.length;
+                  const highlightEnd = highlightStart + currentData.highlight.length;
+                  
+                  if (idx >= highlightStart && idx < highlightEnd) {
+                    return (
+                      <span key={idx} className="text-emerald-400 font-bold">
+                        {char}
+                      </span>
+                    );
+                  }
+                  return <span key={idx}>{char}</span>;
+                })}
+                <span className="inline-block w-0.5 h-7 bg-emerald-400 ml-1 align-middle animate-pulse"></span>
+              </p>
+            </div>
           </div>
         </div>
       </div>
