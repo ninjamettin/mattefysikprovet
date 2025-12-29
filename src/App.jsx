@@ -5,8 +5,9 @@ import Hero from './components/Hero'
 import Features from './components/Features'
 import CoursePlans from './components/CoursePlans'
 import Testimonials from './components/Testimonials'
-import WhatIsThis from './components/WhatIsThis'
-import AboutFounder from './components/AboutFounder'
+import AboutExam from './components/AboutExam'
+import AboutUs from './components/AboutUs'
+import Login from './components/Login'
 import './App.css'
 
 function HomePage() {
@@ -63,8 +64,9 @@ function App() {
         
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/vad-ar-det-har" element={<WhatIsThis />} />
-          <Route path="/om-grundaren" element={<AboutFounder />} />
+          <Route path="/om-provet" element={<AboutExam />} />
+          <Route path="/om-oss" element={<AboutUs />} />
+          <Route path="/login" element={<Login />} />
         </Routes>
       
         {/* Footer */}

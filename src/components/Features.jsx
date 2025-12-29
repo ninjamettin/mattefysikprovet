@@ -5,11 +5,8 @@ function Features() {
       <div className="absolute top-20 right-10 w-40 h-40 border-2 border-slate-200/40 rotate-45 animate-float pointer-events-none hidden lg:block"></div>
       
       <div className="text-center mb-20">
-        <span className="inline-block px-5 py-2 bg-slate-900 text-white text-sm font-medium mb-6 tracking-wide uppercase">
-          Funktioner
-        </span>
         <h2 className="text-4xl md:text-6xl font-bold tracking-tight text-slate-900 mb-6 animate-fade-in">
-          Allt du behöver för att lyckas
+          Du kan lyckas utan bra betyg i SO-ämnen.
         </h2>
         <p className="text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed">
           Professionella verktyg och resurser designade för ditt framgång
@@ -107,9 +104,9 @@ function Features() {
           <div className="w-14 h-14 bg-slate-900 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-md">
             <i data-lucide="cpu" className="w-7 h-7 text-white"></i>
           </div>
-          <h3 className="text-lg font-bold tracking-tight text-slate-900 mb-3">Automatisk rättning & extra prov</h3>
+          <h3 className="text-lg font-bold tracking-tight text-slate-900 mb-3">Automatisk Rättning & Extra Prov</h3>
           <p className="text-sm text-slate-600 leading-relaxed">
-            Vårt eget <strong className="text-slate-900">automatiska rättningssystem</strong> ger dig omedelbar feedback. Plus <strong className="text-slate-900">25+ extra provkopior</strong>.
+            Vårt eget <strong className="text-slate-900">automatiska rättningssystem</strong> ger dig omedelbar feedback. Du kan följa statistiken över vilka typer av uppgifter du oftast gör fel på. På så sätt vet du exakt vad du behöver fokusera på. Då ökar du dina chanser att lyckas och dominera nästa prov!
           </p>
         </div>
 
@@ -120,7 +117,7 @@ function Features() {
           </div>
           <h3 className="text-lg font-bold tracking-tight text-slate-900 mb-3">Enda organisationen i Sverige</h3>
           <p className="text-sm text-slate-600 leading-relaxed">
-            Vi är <strong className="text-slate-900">den enda organisationen</strong> som specialiserar sig på mattefysikprovet.
+            Vi är den enda organisationen i Sverige som erbjuder en guide för studenter som vill förbereda sig inför mattefysikprovet. Det finns tiotals hemsidor och resurser för att plugga till högskoleprovet, där konkurrensen är hård och utbudet stort. Däremot finns det absolut ingen som fokuserar på mattefysikprovet, trots att det kan vara en direkt väg in till Sveriges topputbildningar.
           </p>
         </div>
 
@@ -131,7 +128,7 @@ function Features() {
           </div>
           <h3 className="text-lg font-bold tracking-tight text-slate-900 mb-3">Personlig handledning</h3>
           <p className="text-sm text-slate-600 leading-relaxed">
-            Få hjälp när du kör fast. Erfarna handledare svarar på dina frågor och guidar dig framåt.
+            Få hjälp på direkten när du kör fast och behöver vägledning. Våra erfarna handledare har själva skrivit mattefysikprovet och kommit in på sina drömutbildningar. De vet exakt vad som krävs för att lyckas och delar med sig av strategier, insikter och tips som verkligen fungerar. Nu vill de hjälpa nästa generation studenter att nå samma mål.
           </p>
         </div>
 

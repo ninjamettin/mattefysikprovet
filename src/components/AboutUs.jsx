@@ -1,12 +1,12 @@
-function AboutFounder() {
+function AboutUs() {
   return (
-    <section id="om-grundaren" className="max-w-[1400px] mx-auto px-6 md:px-12 py-32 pt-32 md:pt-40">
+    <section id="om-oss" className="max-w-[1400px] mx-auto px-6 md:px-12 py-32 pt-32 md:pt-40">
       <div className="text-center mb-20">
         <span className="inline-block px-4 py-1 bg-blue-50 text-blue-700 rounded-full text-sm font-medium mb-4 animate-slide-in-from-top-3">
           Grundaren
         </span>
         <h2 className="text-4xl md:text-5xl font-semibold tracking-tight text-slate-900 mb-6 animate-fade-in">
-          Om grundaren
+          Om Oss
         </h2>
         <p className="text-lg text-slate-700 max-w-3xl mx-auto leading-relaxed">
           Lär känna personen bakom MaFyProvet och upptäck varför denna plattform är annorlunda.
@@ -145,4 +145,4 @@ function AboutFounder() {
   );
 }
 
-export default AboutFounder;
+export default AboutUs;

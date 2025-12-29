@@ -73,17 +73,17 @@ function Navigation() {
         {/* Desktop Menu - Center */}
         <div className="hidden lg:flex items-center gap-8">
           <button 
-            onClick={() => navigate('/vad-ar-det-har')}
+            onClick={() => navigate('/om-provet')}
             className="text-[15px] font-medium text-slate-700 hover:text-slate-900 transition-all duration-200 relative group bg-transparent border-none outline-none rounded-none p-0"
           >
-            Vad är det här?
+            Om Provet
             <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-slate-900 transition-all duration-300 group-hover:w-full"></span>
           </button>
           <button 
-            onClick={() => navigate('/om-grundaren')}
+            onClick={() => navigate('/om-oss')}
             className="text-[15px] font-medium text-slate-700 hover:text-slate-900 transition-all duration-200 relative group bg-transparent border-none outline-none rounded-none p-0"
           >
-            Om grundaren
+            Om Oss
             <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-slate-900 transition-all duration-300 group-hover:w-full"></span>
           </button>
         </div>
@@ -91,6 +91,7 @@ function Navigation() {
         {/* Desktop CTAs - Right */}
         <div className="hidden md:flex items-center gap-4">
           <button 
+            onClick={() => navigate('/login')}
             className="text-[15px] font-medium text-slate-900 hover:text-slate-700 transition-colors bg-transparent border-none outline-none rounded-none p-0" 
             aria-label="Logga in"
           >
@@ -135,24 +136,24 @@ function Navigation() {
           <div className="flex flex-col gap-2 bg-white rounded-xl p-4 shadow-lg border border-gray-100">
             <button 
               onClick={() => {
-                navigate('/vad-ar-det-har')
+                navigate('/om-provet')
                 setMobileMenuOpen(false)
               }}
               className="px-4 py-3 text-[15px] font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-all text-left"
             >
-              Vad är det här?
+              Om Provet
             </button>
             <button 
               onClick={() => {
-                navigate('/om-grundaren')
+                navigate('/om-oss')
                 setMobileMenuOpen(false)
               }}
               className="px-4 py-3 text-[15px] font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-all text-left"
             >
-              Om grundaren
+              Om Oss
             </button>
             <div className="border-t border-gray-100 pt-3 mt-2 flex flex-col gap-2">
-              <button className="px-4 py-3 text-[15px] font-bold text-slate-900 bg-white border-2 border-slate-300 rounded-xl transition-all text-left">
+              <button onClick={() => { navigate("/login"); setMobileMenuOpen(false); }} className="px-4 py-3 text-[15px] font-bold text-slate-900 bg-white border-2 border-slate-300 rounded-xl transition-all text-left">
                 Logga in
               </button>
               <button className="px-6 py-3 text-[15px] font-bold text-white bg-gradient-to-r from-emerald-600 to-green-600 rounded-xl transition-all shadow-lg">
