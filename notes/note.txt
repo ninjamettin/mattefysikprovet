@@ -47,3 +47,6 @@ Premium användare:
 
 
 
+TODO:
+
+When logga ut is pressed, a box with are you sure appears and if pressed user is logged out to homescreen.

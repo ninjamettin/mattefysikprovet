@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 import bgImage from '../assets/mattefysik_landing.png'
 
 function Hero() {
@@ -10,6 +12,8 @@ function Hero() {
   const [bullet1Chars, setBullet1Chars] = useState(0)
   const [bullet2Chars, setBullet2Chars] = useState(0)
   const [bullet3Chars, setBullet3Chars] = useState(0)
+  const navigate = useNavigate()
+  const { isLoggedIn } = useAuth()
 
   const titleLine1 = "Dominera"
   const titleLine2 = "matematik och fysikprovet"
@@ -169,8 +173,12 @@ function Hero() {
           </div>
 
           {/* CTA Button inside card */}
-          <button className="px-10 py-4 text-base font-semibold text-white bg-emerald-600 hover:bg-emerald-700 transition-all duration-300 shadow-lg hover:shadow-2xl hover:-translate-y-1 animate-in fade-in slide-in-from-left-8 duration-700 delay-900 relative group overflow-hidden focus:outline-none focus:ring-2 focus:ring-slate-900 focus:ring-offset-2" aria-label="Testa Gratis Nu">
-            <span className="relative z-10">Testa Gratis Nu →</span>
+          <button 
+            onClick={() => navigate(isLoggedIn ? '/dashboard' : '/login')}
+            className="px-10 py-4 text-base font-semibold text-white bg-emerald-600 hover:bg-emerald-700 transition-all duration-300 shadow-lg hover:shadow-2xl hover:-translate-y-1 animate-in fade-in slide-in-from-left-8 duration-700 delay-900 relative group overflow-hidden" 
+            aria-label={isLoggedIn ? "Fortsätt Plugga" : "Testa Gratis Nu"}
+          >
+            <span className="relative z-10">{isLoggedIn ? 'Fortsätt Plugga' : 'Testa Gratis Nu'} →</span>
             <div className="absolute inset-0 bg-slate-900 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
           </button>
         </div>

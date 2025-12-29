@@ -1,2 +1,59 @@
 /* App.css - Custom styles for MaFyProvet */
 
+/* Aggressively remove ALL outlines and rings */
+* {
+  outline: none !important;
+  outline-width: 0 !important;
+  outline-style: none !important;
+  outline-color: transparent !important;
+}
+
+*:focus,
+*:focus-visible,
+*:focus-within {
+  outline: none !important;
+  outline-width: 0 !important;
+  outline-style: none !important;
+  outline-color: transparent !important;
+  box-shadow: none !important;
+  --tw-ring-shadow: 0 0 transparent !important;
+  --tw-ring-offset-shadow: 0 0 transparent !important;
+}
+
+button,
+a {
+  outline: none !important;
+  outline-width: 0 !important;
+  outline-style: none !important;
+  outline-color: transparent !important;
+}
+
+button:hover {
+  outline: none !important;
+  outline-offset: 0px !important;
+}
+
+button:focus,
+button:focus-visible,
+button:active,
+a:hover,
+a:focus,
+a:focus-visible {
+  outline: none !important;
+  outline-width: 0 !important;
+  outline-style: none !important;
+  outline-color: transparent !important;
+  box-shadow: none !important;
+  --tw-ring-shadow: 0 0 transparent !important;
+  --tw-ring-offset-shadow: 0 0 transparent !important;
+}
+
+input:focus,
+input:focus-visible,
+textarea:focus,
+textarea:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+  --tw-ring-shadow: 0 0 transparent !important;
+}
+

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 import logo from '../assets/logo.png'
 
 function Navigation() {
@@ -8,6 +9,9 @@ function Navigation() {
   const [lastScrollY, setLastScrollY] = useState(0)
   const navigate = useNavigate()
   const location = useLocation()
+  const { isLoggedIn, profilePic, logout } = useAuth()
+
+  console.log('Navigation - isLoggedIn:', isLoggedIn, 'profilePic:', profilePic);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -74,14 +78,14 @@ function Navigation() {
         <div className="hidden lg:flex items-center gap-8">
           <button 
             onClick={() => navigate('/om-provet')}
-            className="text-[15px] font-medium text-slate-700 hover:text-slate-900 transition-all duration-200 relative group bg-transparent border-none outline-none rounded-none p-0"
+            className="text-[15px] font-medium text-slate-700 hover:text-slate-900 transition-all duration-200 relative group bg-transparent border-none outline-none p-0"
           >
             Om Provet
             <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-slate-900 transition-all duration-300 group-hover:w-full"></span>
           </button>
           <button 
             onClick={() => navigate('/om-oss')}
-            className="text-[15px] font-medium text-slate-700 hover:text-slate-900 transition-all duration-200 relative group bg-transparent border-none outline-none rounded-none p-0"
+            className="text-[15px] font-medium text-slate-700 hover:text-slate-900 transition-all duration-200 relative group bg-transparent border-none outline-none p-0"
           >
             Om Oss
             <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-slate-900 transition-all duration-300 group-hover:w-full"></span>
@@ -90,19 +94,52 @@ function Navigation() {
 
         {/* Desktop CTAs - Right */}
         <div className="hidden md:flex items-center gap-4">
-          <button 
-            onClick={() => navigate('/login')}
-            className="text-[15px] font-medium text-slate-900 hover:text-slate-700 transition-colors bg-transparent border-none outline-none rounded-none p-0" 
-            aria-label="Logga in"
-          >
-            Logga in
-          </button>
-          <button 
-            className="px-6 py-2.5 text-[15px] font-semibold text-white bg-emerald-600 hover:bg-emerald-700 transition-all duration-300 shadow-md hover:shadow-xl hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:ring-offset-2" 
-            aria-label="Testa Gratis Nu"
-          >
-            Testa Gratis Nu
-          </button>
+          {isLoggedIn ? (
+            <>
+              <button 
+                onClick={() => navigate('/dashboard')}
+                className="px-6 py-2.5 text-[15px] font-semibold text-white bg-emerald-600 hover:bg-emerald-700 transition-all duration-300 shadow-md hover:shadow-xl hover:-translate-y-0.5" 
+                aria-label="Fortsätt Plugga"
+              >
+                Fortsätt Plugga
+              </button>
+              <button 
+                onClick={() => navigate('/dashboard')}
+                className="w-10 h-10 rounded-full overflow-hidden transition-all hover:shadow-lg flex-shrink-0 shadow-md relative"
+                aria-label="Profil"
+              >
+                {profilePic ? (
+                  <img 
+                    src={profilePic} 
+                    alt="Profil" 
+                    className="absolute inset-0 w-full h-full object-cover" 
+                    referrerPolicy="no-referrer"
+                  />
+                ) : (
+                  <div className="absolute inset-0 bg-gradient-to-br from-slate-400 to-slate-500 flex items-center justify-center text-white text-lg font-bold">
+                    U
+                  </div>
+                )}
+              </button>
+            </>
+          ) : (
+            <>
+              <button 
+                onClick={() => navigate('/login')}
+                className="text-[15px] font-medium text-slate-900 hover:text-slate-700 transition-colors bg-transparent border-none outline-none rounded-none p-0" 
+                aria-label="Logga in"
+              >
+                Logga in
+              </button>
+              <button 
+                onClick={() => navigate('/login')}
+                className="px-6 py-2.5 text-[15px] font-semibold text-white bg-emerald-600 hover:bg-emerald-700 transition-all duration-300 shadow-md hover:shadow-xl hover:-translate-y-0.5" 
+                aria-label="Testa Gratis Nu"
+              >
+                Testa Gratis Nu
+              </button>
+            </>
+          )}
         </div>
 
         {/* Mobile Menu Button */}
@@ -153,12 +190,31 @@ function Navigation() {
               Om Oss
             </button>
             <div className="border-t border-gray-100 pt-3 mt-2 flex flex-col gap-2">
-              <button onClick={() => { navigate("/login"); setMobileMenuOpen(false); }} className="px-4 py-3 text-[15px] font-bold text-slate-900 bg-white border-2 border-slate-300 rounded-xl transition-all text-left">
-                Logga in
-              </button>
-              <button className="px-6 py-3 text-[15px] font-bold text-white bg-gradient-to-r from-emerald-600 to-green-600 rounded-xl transition-all shadow-lg">
-                Testa Gratis Nu
-              </button>
+              {isLoggedIn ? (
+                <>
+                  <button 
+                    onClick={() => { navigate("/dashboard"); setMobileMenuOpen(false); }} 
+                    className="px-6 py-3 text-[15px] font-bold text-white bg-gradient-to-r from-emerald-600 to-green-600 rounded-xl transition-all shadow-lg"
+                  >
+                    Fortsätt Plugga
+                  </button>
+                  <button 
+                    onClick={() => { logout(); setMobileMenuOpen(false); }} 
+                    className="px-4 py-3 text-[15px] font-bold text-slate-900 bg-white border-2 border-slate-300 rounded-xl transition-all text-left"
+                  >
+                    Logga ut
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button onClick={() => { navigate("/login"); setMobileMenuOpen(false); }} className="px-4 py-3 text-[15px] font-bold text-slate-900 bg-white border-2 border-slate-300 rounded-xl transition-all text-left">
+                    Logga in
+                  </button>
+                  <button className="px-6 py-3 text-[15px] font-bold text-white bg-gradient-to-r from-emerald-600 to-green-600 rounded-xl transition-all shadow-lg">
+                    Testa Gratis Nu
+                  </button>
+                </>
+              )}
             </div>
           </div>
         </div>

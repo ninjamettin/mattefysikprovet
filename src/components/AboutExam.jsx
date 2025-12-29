@@ -2,9 +2,6 @@ function AboutExam() {
   return (
     <section id="omprovet" className="max-w-[1400px] mx-auto px-6 md:px-12 py-32">
       <div className="text-center mb-20">
-        <span className="inline-block px-4 py-1 bg-purple-50 text-purple-700 rounded-full text-sm font-medium mb-4 animate-slide-in-from-top-3">
-          Om Provet
-        </span>
         <h2 className="text-4xl md:text-5xl font-semibold tracking-tight text-slate-900 mb-6 animate-fade-in">
           Om matematik- och fysikprovet
         </h2>
