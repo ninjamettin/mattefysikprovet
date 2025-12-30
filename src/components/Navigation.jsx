@@ -97,14 +97,14 @@ function Navigation() {
           {isLoggedIn ? (
             <>
               <button 
-                onClick={() => navigate('/dashboard')}
+                onClick={() => navigate('/dashboard/profil')}
                 className="px-6 py-2.5 text-[15px] font-semibold text-white bg-emerald-600 hover:bg-emerald-700 transition-all duration-300 shadow-md hover:shadow-xl hover:-translate-y-0.5" 
                 aria-label="Fortsätt Plugga"
               >
                 Fortsätt Plugga
               </button>
               <button 
-                onClick={() => navigate('/dashboard')}
+                onClick={() => navigate('/dashboard/profil')}
                 className="w-10 h-10 rounded-full overflow-hidden transition-all hover:shadow-lg flex-shrink-0 shadow-md relative"
                 aria-label="Profil"
               >
@@ -176,7 +176,7 @@ function Navigation() {
                 navigate('/om-provet')
                 setMobileMenuOpen(false)
               }}
-              className="px-4 py-3 text-[15px] font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-all text-left"
+              className="px-4 py-3 text-[15px] font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 bg-transparent rounded-lg transition-all text-left border-0"
             >
               Om Provet
             </button>
@@ -185,7 +185,7 @@ function Navigation() {
                 navigate('/om-oss')
                 setMobileMenuOpen(false)
               }}
-              className="px-4 py-3 text-[15px] font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-all text-left"
+              className="px-4 py-3 text-[15px] font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 bg-transparent rounded-lg transition-all text-left border-0"
             >
               Om Oss
             </button>
@@ -193,7 +193,7 @@ function Navigation() {
               {isLoggedIn ? (
                 <>
                   <button 
-                    onClick={() => { navigate("/dashboard"); setMobileMenuOpen(false); }} 
+                    onClick={() => { navigate("/dashboard/profil"); setMobileMenuOpen(false); }} 
                     className="px-6 py-3 text-[15px] font-bold text-white bg-gradient-to-r from-emerald-600 to-green-600 rounded-xl transition-all shadow-lg"
                   >
                     Fortsätt Plugga

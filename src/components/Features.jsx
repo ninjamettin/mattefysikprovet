@@ -86,7 +86,7 @@ function Features() {
                 <svg className="flex-shrink-0 w-6 h-6 text-emerald-600 mt-1" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                 </svg>
-                <p clasdcfsName="text-slate-700 leading-relaxed">
+                <p className="text-slate-700 leading-relaxed">
                   <strong className="text-slate-900">Vi har skapat 25+ egna prov</strong> som är lika svåra som de riktiga proven
                 </p>
               </div>

@@ -1,98 +1,111 @@
 import { useState, useEffect } from 'react';
-import { useAuth } from '../context/AuthContext';
+import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
+import ProfilPage from './ProfilPage';
+import AllaProvPage from './AllaProvPage';
+import StatistikPage from './StatistikPage';
+import TestaDigSjalvPage from './TestaDigSjalvPage';
+import PluggaTeoriPage from './PluggaTeoriPage';
+import logo from '../assets/logo.png';
 
 const Dashboard = () => {
-  const { user, profilePic, logout } = useAuth();
-  const [activePage, setActivePage] = useState('profil');
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     // Initialize Lucide icons when page changes
     if (window.lucide) {
       window.lucide.createIcons();
     }
-  }, [activePage]);
+  }, [location.pathname]);
 
   const menuItems = [
-    { id: 'profil', label: 'Profil', icon: 'user' },
-    { id: 'gamla-prov', label: 'Gamla Officiella Prov', icon: 'archive' },
-    { id: 'vara-prov', label: 'Våra Prov', icon: 'file-text' },
-    { id: 'statistik', label: 'Statistik', icon: 'bar-chart-2' },
-    { id: 'testa-dig-sjalv', label: 'Testa dig själv', icon: 'clipboard-check' },
-    { id: 'plugga-teori', label: 'Plugga Teori', icon: 'book' }
+    { id: 'profil', label: 'Profil', icon: 'user', path: '/dashboard/profil' },
+    { id: 'alla-prov', label: 'Alla Prov', icon: 'archive', path: '/dashboard/alla-prov' },
+    { id: 'statistik', label: 'Statistik', icon: 'bar-chart-2', path: '/dashboard/statistik' },
+    { id: 'testa-dig-sjalv', label: 'Testa dig själv', icon: 'clipboard-check', path: '/dashboard/testa-dig-sjalv' },
+    { id: 'plugga-teori', label: 'Plugga Teori', icon: 'book', path: '/dashboard/plugga-teori' }
   ];
 
-  const renderPage = () => {
-    switch (activePage) {
-      case 'profil':
-        return (
-          <div className="space-y-6">
-            <h1 className="text-3xl font-bold text-slate-900">Min Profil</h1>
-            <div className="bg-white rounded-2xl p-8 shadow-lg border border-slate-100">
-              <div className="flex items-center gap-6 mb-8">
-                {profilePic ? (
-                  <img src={profilePic} alt="Profil" className="w-20 h-20 rounded-full" referrerPolicy="no-referrer" />
-                ) : (
-                  <div className="w-20 h-20 rounded-full bg-slate-200 flex items-center justify-center">
-                    <i data-lucide="user" className="w-10 h-10 text-slate-400"></i>
-                  </div>
-                )}
-                <div>
-                  <h2 className="text-2xl font-bold text-slate-900">{user?.email || 'Användare'}</h2>
-                  <p className="text-slate-600">Medlemssida</p>
-                </div>
-              </div>
-              <button 
-                onClick={logout}
-                className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
-              >
-                Logga ut
-              </button>
-            </div>
-          </div>
-        );
-      case 'gamla-prov':
-        return <div className="text-2xl font-bold text-slate-900">Gamla Officiella Prov</div>;
-      case 'vara-prov':
-        return <div className="text-2xl font-bold text-slate-900">Våra Prov</div>;
-      case 'statistik':
-        return <div className="text-2xl font-bold text-slate-900">Statistik</div>;
-      case 'testa-dig-sjalv':
-        return <div className="text-2xl font-bold text-slate-900">Testa dig själv</div>;
-      case 'plugga-teori':
-        return <div className="text-2xl font-bold text-slate-900">Plugga Teori</div>;
-      default:
-        return null;
-    }
+  const isActivePath = (path) => {
+    return location.pathname === path || (path === '/dashboard/profil' && location.pathname === '/dashboard');
   };
 
   return (
     <div className="flex min-h-screen bg-slate-50">
       {/* Sidebar */}
-      <div className="w-64 bg-slate-900 text-white shadow-lg pt-20">
-        <div className="p-6">
+      <div 
+        className={`bg-slate-900 text-white shadow-lg transition-all duration-300 ${
+          sidebarOpen ? 'w-64' : 'w-20'
+        } flex flex-col`}
+      >
+        {/* Logo Section */}
+        <div className={`p-6 flex ${sidebarOpen ? 'justify-start' : 'justify-center'}`}>
+          <button
+            onClick={() => navigate('/')}
+            className="flex items-center gap-3 group cursor-pointer hover:opacity-80 transition-opacity bg-transparent border-none outline-none"
+          >
+            <div className="w-10 h-10 flex-shrink-0 rounded-lg overflow-hidden">
+              <img 
+                src={logo} 
+                alt="MaFyProvet Logo" 
+                className="w-full h-full object-contain"
+              />
+            </div>
+            {sidebarOpen && (
+              <span className="text-lg font-bold tracking-tight whitespace-nowrap">
+                MaFyProvet
+              </span>
+            )}
+          </button>
+        </div>
+
+        {/* Navigation */}
+        <div className="px-6 pb-6 flex-1">
           <nav className="space-y-3">
             {menuItems.map((item) => (
               <button
                 key={item.id}
-                onClick={() => setActivePage(item.id)}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
-                  activePage === item.id
+                onClick={() => navigate(item.path)}
+                className={`w-full flex items-center ${sidebarOpen ? 'gap-3 px-4' : 'justify-center px-0'} py-3 rounded-lg transition-all ${
+                  isActivePath(item.path)
                     ? 'bg-emerald-600 text-white'
                     : 'text-slate-300 hover:bg-slate-800'
                 }`}
+                title={!sidebarOpen ? item.label : ''}
               >
-                <i data-lucide={item.icon} className="w-5 h-5"></i>
-                <span className="text-sm font-medium">{item.label}</span>
+                <i data-lucide={item.icon} className="w-5 h-5 flex-shrink-0"></i>
+                {sidebarOpen && <span className="text-sm font-medium">{item.label}</span>}
               </button>
             ))}
           </nav>
+        </div>
+
+        {/* Toggle Button */}
+        <div className="p-4">
+          <button
+            onClick={() => setSidebarOpen(!sidebarOpen)}
+            className={`w-full flex items-center justify-center px-4 py-3 rounded-lg text-slate-300 hover:bg-slate-800 transition-all duration-300 ${
+              !sidebarOpen ? 'rotate-180' : ''
+            }`}
+            title={sidebarOpen ? 'Dölj meny' : 'Visa meny'}
+          >
+            <i data-lucide="chevron-left" className="w-5 h-5"></i>
+          </button>
         </div>
       </div>
 
       {/* Main Content */}
       <div className="flex-1 p-8">
         <div className="max-w-5xl">
-          {renderPage()}
+          <Routes>
+            <Route path="/" element={<ProfilPage />} />
+            <Route path="/profil" element={<ProfilPage />} />
+            <Route path="/alla-prov" element={<AllaProvPage />} />
+            <Route path="/statistik" element={<StatistikPage />} />
+            <Route path="/testa-dig-sjalv" element={<TestaDigSjalvPage />} />
+            <Route path="/plugga-teori" element={<PluggaTeoriPage />} />
+          </Routes>
         </div>
       </div>
     </div>

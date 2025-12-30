@@ -41,6 +41,9 @@ function ScrollToTop() {
 }
 
 function App() {
+  const location = useLocation();
+  const isDashboard = location.pathname.startsWith('/dashboard');
+
   useEffect(() => {
     // Initialize Lucide icons after component mounts
     if (window.lucide) {
@@ -52,52 +55,50 @@ function App() {
   }, [])
 
   return (
-    <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
-      <AuthProvider>
-        <Router>
-        <div className="bg-[#FAF9F6] min-h-screen text-slate-900 antialiased overflow-x-hidden relative">
-          {/* Animated Background */}
-          <div className="fixed inset-0 z-[-1] bg-gradient-to-br from-[#FAF9F6] via-[#F5F3EF] to-[#EAE7E0]"></div>
-          
-          {/* Geometric 3D Elements */}
-          <div className="fixed inset-0 z-[-1] overflow-hidden pointer-events-none">
-            <div className="absolute top-1/4 left-1/4 w-32 h-32 border border-slate-200/30 rotate-45 animate-float"></div>
-            <div className="absolute top-3/4 right-1/4 w-24 h-24 border-2 border-emerald-300/20 rounded-full animate-float-delayed"></div>
-            <div className="absolute top-1/2 right-1/3 w-20 h-20 bg-gradient-to-br from-slate-100/20 to-transparent backdrop-blur-sm rotate-12 animate-rotate-slow"></div>
-          </div>
+    <div className="bg-[#FAF9F6] min-h-screen text-slate-900 antialiased overflow-x-hidden relative">
+      {/* Animated Background */}
+      <div className="fixed inset-0 z-[-1] bg-gradient-to-br from-[#FAF9F6] via-[#F5F3EF] to-[#EAE7E0]"></div>
+      
+      {/* Geometric 3D Elements */}
+      <div className="fixed inset-0 z-[-1] overflow-hidden pointer-events-none">
+        <div className="absolute top-1/4 left-1/4 w-32 h-32 border border-slate-200/30 rotate-45 animate-float"></div>
+        <div className="absolute top-3/4 right-1/4 w-24 h-24 border-2 border-emerald-300/20 rounded-full animate-float-delayed"></div>
+        <div className="absolute top-1/2 right-1/3 w-20 h-20 bg-gradient-to-br from-slate-100/20 to-transparent backdrop-blur-sm rotate-12 animate-rotate-slow"></div>
+      </div>
 
-          <ScrollToTop />
-          <Navigation />
-          
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/om-provet" element={<AboutExam />} />
-            <Route path="/om-oss" element={<AboutUs />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-          </Routes>
-        
-          {/* Footer */}
-          <footer id="kontakt" className="bg-white border-t border-slate-200 py-8 px-6 md:px-12">
-            <div className="max-w-[1400px] mx-auto flex items-center justify-between">
-              {/* Left side - Logo and Company Info */}
-              <div className="flex items-start gap-6">
-                <img src={logo} alt="Mattefysikprovet Logo" className="w-12 h-12 rounded-lg" />
-                <div className="text-sm text-slate-600 leading-relaxed">
-                  <p className="font-bold text-slate-900 mb-1">Mattefysikprovet</p>
-                  <p>GUNDOGDU AB</p>
-                  <p>2838-284</p>
-                  <p>176 72 Järfälla</p>
-                  <p className="mt-2">
-                    <a href="mailto:support@mattefysikprovet.se" className="text-slate-900 hover:text-emerald-600 transition-colors">
-                      support@mattefysikprovet.se
-                    </a>
-                  </p>
-                  <p className="mt-2">
-                    <a href="#" className="text-slate-900 hover:text-emerald-600 transition-colors underline">
-                      Användarvillkor
-                    </a>
-                  </p>
+      <ScrollToTop />
+      {!isDashboard && <Navigation />}
+      
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/om-provet" element={<AboutExam />} />
+        <Route path="/om-oss" element={<AboutUs />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/dashboard/*" element={<Dashboard />} />
+      </Routes>
+    
+      {/* Footer */}
+      {!isDashboard && (
+        <footer id="kontakt" className="bg-white border-t border-slate-200 py-8 px-6 md:px-12">
+          <div className="max-w-[1400px] mx-auto flex items-center justify-between">
+            {/* Left side - Logo and Company Info */}
+            <div className="flex items-start gap-6">
+              <img src={logo} alt="Mattefysikprovet Logo" className="w-12 h-12 rounded-lg" />
+              <div className="text-sm text-slate-600 leading-relaxed">
+                <p className="font-bold text-slate-900 mb-1">Mattefysikprovet</p>
+                <p>GUNDOGDU AB</p>
+                <p>2838-284</p>
+                <p>176 72 Järfälla</p>
+                <p className="mt-2">
+                  <a href="mailto:support@mattefysikprovet.se" className="text-slate-900 hover:text-emerald-600 transition-colors">
+                    support@mattefysikprovet.se
+                  </a>
+                </p>
+                <p className="mt-2">
+                  <a href="#" className="text-slate-900 hover:text-emerald-600 transition-colors underline">
+                    Användarvillkor
+                  </a>
+                </p>
                 </div>
               </div>
 
@@ -112,11 +113,21 @@ function App() {
               </button>
             </div>
           </footer>
-        </div>
-      </Router>
-    </AuthProvider>
+        )}
+      </div>
+    )
+}
+
+function AppWrapper() {
+  return (
+    <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+      <AuthProvider>
+        <Router>
+          <App />
+        </Router>
+      </AuthProvider>
     </GoogleOAuthProvider>
   )
 }
 
-export default App
+export default AppWrapper

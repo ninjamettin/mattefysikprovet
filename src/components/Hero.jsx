@@ -18,7 +18,7 @@ function Hero() {
   const titleLine1 = "Dominera"
   const titleLine2 = "matematik och fysikprovet"
   const bullet1Text = "Grundad av Teknisk Fysiker"
-  const bullet2Text = "Lösningsförslag till ALLA gamla officiella prov + våra"
+  const bullet2Text = "Lösningsförslag till ALLA Prov + våra"
   const bullet3Text = "25+ av våra perfekta kopior för att kunna träna många fler gånger istället för bara få antal gamla prov"
 
   // Animate title and bullets letter by letter
