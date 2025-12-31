@@ -92,21 +92,39 @@ async function processPdf(browser, filePath, relativePath) {
       clip: { x: 0, y: 0, width: dimensions.width, height: dimensions.height }
     });
 
-    // Use sharp to generate DZI
-    const dziName = `page_${i}`;
-    await sharp(buffer)
-      .tile({
-        layout: 'dz',
-        size: 256,
-        overlap: 0
-      })
-      .toFile(path.join(outputBaseDir, `${dziName}.dzi`));
+    // Split the page into 3 vertical slices and save as JPEGs
+    const image = sharp(buffer);
+    const meta = await image.metadata();
+    console.log(`    image metadata: width=${meta.width}, height=${meta.height}, format=${meta.format}`);
+    const totalWidth = Math.max(1, Math.floor(meta.width || 0));
+    const totalHeight = Math.max(1, Math.floor(meta.height || 0));
+    const parts = [];
+    const partCount = 3;
+    const partWidth = Math.floor(totalWidth / partCount);
+    for (let p = 0; p < partCount; p++) {
+      const left = p * partWidth;
+      let w = p === partCount - 1 ? totalWidth - left : partWidth;
+      if (w <= 0) w = Math.max(1, totalWidth - left);
+      w = Math.min(w, totalWidth - left);
+      const outName = `page_${i}_part_${p}.jpg`;
+      const outPath = path.join(outputBaseDir, outName);
+      console.log(`    slicing part ${p}: left=${left}, width=${w}, height=${totalHeight}`);
+      try {
+        await image.clone()
+          .extract({ left, top: 0, width: w, height: totalHeight })
+          .jpeg({ quality: 85 })
+          .toFile(outPath);
+        parts.push(outName);
+      } catch (err) {
+        console.warn(`    failed to write part ${p} for page ${i}:`, err.message);
+      }
+    }
 
     pagesManifest.push({
       page: i,
-      width: dimensions.width / 2.0, // Original size
-      height: dimensions.height / 2.0,
-      dzi: `${dziName}.dzi`
+      width: totalWidth,
+      height: totalHeight,
+      parts
     });
   }
   
