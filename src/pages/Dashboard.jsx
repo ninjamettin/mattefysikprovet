@@ -31,13 +31,15 @@ const Dashboard = () => {
     return location.pathname === path || (path === '/dashboard/profil' && location.pathname === '/dashboard');
   };
 
+  const isAllaProv = location.pathname === '/dashboard/alla-prov';
+
   return (
     <div className="flex min-h-screen bg-slate-50">
       {/* Sidebar */}
       <div 
         className={`bg-slate-900 text-white shadow-lg transition-all duration-300 ${
           sidebarOpen ? 'w-64' : 'w-20'
-        } flex flex-col`}
+        } flex flex-col z-20`}
       >
         {/* Logo Section */}
         <div className={`p-6 flex ${sidebarOpen ? 'justify-start' : 'justify-center'}`}>
@@ -96,8 +98,8 @@ const Dashboard = () => {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 p-8">
-        <div className="max-w-5xl">
+      <div className={`flex-1 ${isAllaProv ? 'p-0 overflow-hidden' : 'p-8'}`}>
+        <div className={isAllaProv ? 'w-full h-full' : 'max-w-5xl'}>
           <Routes>
             <Route path="/" element={<ProfilPage />} />
             <Route path="/profil" element={<ProfilPage />} />

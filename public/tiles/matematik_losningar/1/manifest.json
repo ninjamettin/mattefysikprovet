@@ -1,0 +1,40 @@
+{
+  "pages": [
+    {
+      "page": 1,
+      "width": 595.276,
+      "height": 841.89,
+      "dzi": "page_1.dzi"
+    },
+    {
+      "page": 2,
+      "width": 595.276,
+      "height": 841.89,
+      "dzi": "page_2.dzi"
+    },
+    {
+      "page": 3,
+      "width": 595.276,
+      "height": 841.89,
+      "dzi": "page_3.dzi"
+    },
+    {
+      "page": 4,
+      "width": 595.276,
+      "height": 841.89,
+      "dzi": "page_4.dzi"
+    },
+    {
+      "page": 5,
+      "width": 595.276,
+      "height": 841.89,
+      "dzi": "page_5.dzi"
+    },
+    {
+      "page": 6,
+      "width": 595.276,
+      "height": 841.89,
+      "dzi": "page_6.dzi"
+    }
+  ]
+}
