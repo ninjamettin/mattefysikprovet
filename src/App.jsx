@@ -83,7 +83,7 @@ function App() {
           <div className="max-w-[1400px] mx-auto flex items-center justify-between">
             {/* Left side - Logo and Company Info */}
             <div className="flex items-start gap-6">
-              <img src={logo} alt="Mattefysikprovet Logo" className="w-12 h-12 rounded-lg" />
+              <img src={logo} alt="Mattefysikprovet Logo" className="w-12 h-12 rounded-lg relative z-50" />
               <div className="text-sm text-slate-600 leading-relaxed">
                 <p className="font-bold text-slate-900 mb-1">Mattefysikprovet</p>
                 <p>GUNDOGDU AB</p>

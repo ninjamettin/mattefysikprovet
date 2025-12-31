@@ -19,6 +19,11 @@ const AllaProvPage = () => {
   
   const [containerWidth, setContainerWidth] = useState(null);
   const containerRef = useRef(null);
+  // Toggle slider refs & styles
+  const subjectToggleRef = useRef(null);
+  const [subjectSliderStyle, setSubjectSliderStyle] = useState({});
+  const typeToggleRef = useRef(null);
+  const [typeSliderStyle, setTypeSliderStyle] = useState({});
 
   // Measure container width
   useEffect(() => {
@@ -33,6 +38,44 @@ const AllaProvPage = () => {
     resizeObserver.observe(containerRef.current);
     return () => resizeObserver.disconnect();
   }, []);
+
+  // Position subject slider to match active button
+  useEffect(() => {
+    const update = () => {
+      const container = subjectToggleRef.current;
+      if (!container) return;
+      const active = container.querySelector(`[data-key="${subject}"]`);
+      if (!active) return;
+      const rect = active.getBoundingClientRect();
+      const parentRect = container.getBoundingClientRect();
+      setSubjectSliderStyle({
+        width: `${rect.width}px`,
+        transform: `translateX(${rect.left - parentRect.left}px)`,
+      });
+    };
+    update();
+    window.addEventListener('resize', update);
+    return () => window.removeEventListener('resize', update);
+  }, [subject]);
+
+  // Position type slider to match active button
+  useEffect(() => {
+    const update = () => {
+      const container = typeToggleRef.current;
+      if (!container) return;
+      const active = container.querySelector(`[data-key="${type}"]`);
+      if (!active) return;
+      const rect = active.getBoundingClientRect();
+      const parentRect = container.getBoundingClientRect();
+      setTypeSliderStyle({
+        width: `${rect.width}px`,
+        transform: `translateX(${rect.left - parentRect.left}px)`,
+      });
+    };
+    update();
+    window.addEventListener('resize', update);
+    return () => window.removeEventListener('resize', update);
+  }, [type]);
 
   // Security: Disable right-click and keyboard shortcuts
   useEffect(() => {
@@ -238,24 +281,24 @@ const AllaProvPage = () => {
             </div>
 
             {/* Subject Toggle */}
-            <div className="relative grid grid-cols-2 rounded-xl bg-slate-100/80 p-1 gap-1 w-56">
+            <div ref={subjectToggleRef} className="relative inline-flex items-center rounded-xl bg-slate-100/80 p-1 gap-1">
               <div
-                className="absolute top-1 bottom-1 left-1 w-[calc(50%-0.25rem)] rounded-lg bg-slate-900 shadow-sm transition-transform duration-300 ease-out"
-                style={{
-                  transform: subject === 'MATEMATIK' ? 'translateX(0)' : 'translateX(calc(100% + 0.25rem))',
-                }}
+                className="absolute top-1 bottom-1 left-0 rounded-lg bg-slate-900 shadow-sm transition-all duration-300 ease-out"
+                style={{ ...subjectSliderStyle }}
               />
               <button
+                data-key="MATEMATIK"
                 onClick={() => setSubject('MATEMATIK')}
-                className={`relative z-10 py-1.5 text-sm font-bold transition-colors border-0 bg-transparent ${
+                className={`relative z-10 px-3 py-1.5 text-sm font-bold transition-colors border-0 bg-transparent ${
                   subject === 'MATEMATIK' ? 'text-white' : 'text-slate-500 hover:text-slate-700'
                 }`}
               >
                 MATEMATIK
               </button>
               <button
+                data-key="FYSIK"
                 onClick={() => setSubject('FYSIK')}
-                className={`relative z-10 py-1.5 text-sm font-bold transition-colors border-0 bg-transparent ${
+                className={`relative z-10 px-3 py-1.5 text-sm font-bold transition-colors border-0 bg-transparent ${
                   subject === 'FYSIK' ? 'text-white' : 'text-slate-500 hover:text-slate-700'
                 }`}
               >
@@ -264,24 +307,24 @@ const AllaProvPage = () => {
             </div>
 
             {/* Type Toggle */}
-            <div className="relative grid grid-cols-2 rounded-xl bg-slate-100/80 p-1 gap-1 w-48">
+            <div ref={typeToggleRef} className="relative inline-flex items-center rounded-xl bg-slate-100/80 p-1 gap-1">
               <div
-                className="absolute top-1 bottom-1 left-1 w-[calc(50%-0.25rem)] rounded-lg bg-slate-900 shadow-sm transition-transform duration-300 ease-out"
-                style={{
-                  transform: type === 'OFFICIELLA' ? 'translateX(0)' : 'translateX(calc(100% + 0.25rem))',
-                }}
+                className="absolute top-1 bottom-1 left-0 rounded-lg bg-slate-900 shadow-sm transition-all duration-300 ease-out"
+                style={{ ...typeSliderStyle }}
               />
               <button
+                data-key="OFFICIELLA"
                 onClick={() => setType('OFFICIELLA')}
-                className={`relative z-10 py-1.5 text-sm font-bold transition-colors border-0 bg-transparent ${
+                className={`relative z-10 px-3 py-1.5 text-sm font-bold transition-colors border-0 bg-transparent ${
                   type === 'OFFICIELLA' ? 'text-white' : 'text-slate-500 hover:text-slate-700'
                 }`}
               >
                 OFFICIELLA
               </button>
               <button
+                data-key="VÅRA"
                 onClick={() => setType('VÅRA')}
-                className={`relative z-10 py-1.5 text-sm font-bold transition-colors border-0 bg-transparent ${
+                className={`relative z-10 px-3 py-1.5 text-sm font-bold transition-colors border-0 bg-transparent ${
                   type === 'VÅRA' ? 'text-white' : 'text-slate-500 hover:text-slate-700'
                 }`}
               >
