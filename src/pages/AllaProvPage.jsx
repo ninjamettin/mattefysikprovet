@@ -148,17 +148,8 @@ const AllaProvPage = () => {
     setIsSolutionVisible(!isSolutionVisible);
   };
 
-  const handleTimerInputChange = (e) => {
-    const value = parseInt(e.target.value) || 0;
-    setTimerMinutes(value);
-    setRemainingTime(value * 60);
-    setIsTimerRunning(false);
-  };
-
   const resetTimer = () => {
-    const defaultMinutes = subject === 'MATEMATIK' ? 180 : 120;
-    setTimerMinutes(defaultMinutes);
-    setRemainingTime(defaultMinutes * 60);
+    setRemainingTime(180 * 60);
     setIsTimerRunning(false);
   };
 
@@ -198,8 +189,16 @@ const AllaProvPage = () => {
     updateUrls();
   }, [year, subject, type]);
 
+  // Lucide DOM replacement removed to allow custom SVG chevrons to display and be styled
+
   return (
     <div className="h-screen flex flex-col relative bg-slate-50 overflow-hidden select-none print:hidden">
+      <style>{`
+        .chevron-toggle-btn svg {
+          width: 64px !important;
+          height: 64px !important;
+        }
+      `}</style>
       <style>{`
         @media print {
           body {
@@ -208,199 +207,220 @@ const AllaProvPage = () => {
         }
       `}</style>
       
-      {/* Floating Island Filter Bar */}
-      <div 
-        className={`absolute top-6 left-1/2 -translate-x-1/2 z-30 transition-all duration-500 ease-in-out ${
-          isFiltersCollapsed ? '-translate-y-[200%] opacity-0' : 'translate-y-0 opacity-100'
-        }`}
-      >
-        <div className="bg-white/90 backdrop-blur-md rounded-2xl px-8 py-3 shadow-2xl border border-white/20">
-          <div className="flex items-center gap-6">
-            {/* Year Selector */}
-            <div className="flex items-center bg-slate-50/50 border border-slate-200/60 rounded-xl overflow-visible">
-              {/* Year Display */}
-              <div className="w-16 h-9 px-2 flex items-center justify-center font-bold text-slate-900">
-                {year}
-              </div>
-              
-              {/* Up/Down Buttons */}
-              <div className="flex flex-col border-l border-slate-200/60">
-                <button
-                  onClick={incrementYear}
-                  disabled={year >= currentYear}
-                  className="w-7 h-4.5 flex items-center justify-center bg-transparent hover:bg-slate-200/50 disabled:opacity-30 transition-colors border-0 border-b border-slate-200/60 p-0 rounded-tr-xl"
-                  aria-label="Next year"
-                >
-                  <ChevronUp className="w-3 h-3 text-slate-700" />
-                </button>
-                <button
-                  onClick={decrementYear}
-                  disabled={year <= 2007}
-                  className="w-7 h-4.5 flex items-center justify-center bg-transparent hover:bg-slate-200/50 disabled:opacity-30 transition-colors border-0 p-0 rounded-br-xl"
-                  aria-label="Previous year"
-                >
-                  <ChevronDown className="w-3 h-3 text-slate-700" />
-                </button>
-              </div>
-              
-              {/* Dropdown Button */}
-              <div className="relative border-l border-slate-200/60">
-                <button
-                  onClick={() => setIsYearDropdownOpen(!isYearDropdownOpen)}
-                  className="w-9 h-9 flex items-center justify-center bg-transparent hover:bg-slate-200/50 transition-colors border-0 p-0 rounded-r-xl"
-                  aria-label="Select year"
-                >
-                  <List className="w-4 h-4 text-slate-700" />
-                </button>
+      {/* Container for Floating Island and Collapse Button */}
+      <div className="absolute top-6 left-1/2 -translate-x-1/2 z-30 flex items-center gap-4">
+        {/* Floating Island Filter Bar */}
+        <div 
+          className={`transition-all duration-500 ease-in-out ${
+            isFiltersCollapsed ? '-translate-y-[200%] opacity-0' : 'translate-y-0 opacity-100'
+          }`}
+        >
+          <div className="bg-white/90 backdrop-blur-md rounded-2xl px-8 py-3 shadow-2xl border border-white/20">
+            <div className="flex items-center gap-6">
+              {/* Year Selector */}
+              <div className="flex items-center bg-slate-50/50 border border-slate-200/60 rounded-xl overflow-visible">
+                {/* Year Display */}
+                <div className="w-16 h-9 px-2 flex items-center justify-center font-bold text-slate-900">
+                  {year}
+                </div>
                 
-                {isYearDropdownOpen && (
-                  <>
-                    <div 
-                      className="fixed inset-0 z-10" 
-                      onClick={() => setIsYearDropdownOpen(false)}
-                    ></div>
-                    <div 
-                      className="absolute z-20 mt-4 left-1/2 -translate-x-1/2 w-32 bg-white/90 backdrop-blur-md rounded-xl shadow-2xl max-h-64 overflow-y-auto border border-white/20"
-                      style={{ scrollbarWidth: 'none' }}
-                    >
-                      {years.map((y) => (
-                        <button
-                          key={y}
-                          onClick={() => handleYearSelect(y)}
-                          className={`w-full px-4 py-2 text-center font-medium transition-colors border-0 bg-transparent ${
-                            y === year ? 'bg-slate-900 text-white' : 'text-slate-700 hover:bg-slate-100'
-                          }`}
-                        >
-                          {y}
-                        </button>
-                      ))}
-                    </div>
-                  </>
-                )}
+                {/* Up/Down Buttons */}
+                <div className="flex flex-col border-l border-slate-200/60">
+                  <button
+                    onClick={incrementYear}
+                    disabled={year >= currentYear}
+                    className="w-7 h-4.5 flex items-center justify-center bg-transparent hover:bg-slate-200/50 disabled:opacity-30 transition-colors border-0 border-b border-slate-200/60 p-0 rounded-tr-xl flex-shrink-0"
+                    aria-label="Next year"
+                  >
+                      <ChevronUp className="w-3 h-3 text-slate-700" />
+                  </button>
+                    <button
+                    onClick={decrementYear}
+                    disabled={year <= 2007}
+                    className="w-7 h-4.5 flex items-center justify-center bg-transparent hover:bg-slate-200/50 disabled:opacity-30 transition-colors border-0 p-0 rounded-br-xl flex-shrink-0"
+                    aria-label="Previous year"
+                  >
+                    <ChevronDown className="w-3 h-3 text-slate-700" />
+                  </button>
+                </div>
+                
+                {/* Dropdown Button */}
+                <div className="relative border-l border-slate-200/60">
+                  <button
+                    onClick={() => setIsYearDropdownOpen(!isYearDropdownOpen)}
+                    className="w-9 h-9 flex items-center justify-center bg-transparent hover:bg-slate-200/50 transition-colors border-0 p-0 rounded-r-xl"
+                    aria-label="Select year"
+                  >
+                    <List className="w-4 h-4 text-slate-700" />
+                  </button>
+                  
+                  {isYearDropdownOpen && (
+                    <>
+                      <div 
+                        className="fixed inset-0 z-10" 
+                        onClick={() => setIsYearDropdownOpen(false)}
+                      ></div>
+                      <div 
+                        className="absolute z-20 mt-4 left-1/2 -translate-x-1/2 w-32 bg-white/90 backdrop-blur-md rounded-xl shadow-2xl max-h-64 overflow-y-auto border border-white/20"
+                        style={{ scrollbarWidth: 'none' }}
+                      >
+                        {years.map((y) => (
+                          <button
+                            key={y}
+                            onClick={() => handleYearSelect(y)}
+                            className={`w-full px-4 py-2 text-center font-medium transition-colors border-0 bg-transparent ${
+                              y === year ? 'bg-slate-900 text-white' : 'text-slate-700 hover:bg-slate-100'
+                            }`}
+                          >
+                            {y}
+                          </button>
+                        ))}
+                      </div>
+                    </>
+                  )}
+                </div>
               </div>
-            </div>
 
-            {/* Subject Toggle */}
-            <div ref={subjectToggleRef} className="relative inline-flex items-center rounded-xl bg-slate-100/80 p-1 gap-1">
-              <div
-                className="absolute top-1 bottom-1 left-0 rounded-lg bg-slate-900 shadow-sm transition-all duration-300 ease-out"
-                style={{ ...subjectSliderStyle }}
-              />
-              <button
-                data-key="MATEMATIK"
-                onClick={() => setSubject('MATEMATIK')}
-                className={`relative z-10 px-3 py-1.5 text-sm font-bold transition-colors border-0 bg-transparent ${
-                  subject === 'MATEMATIK' ? 'text-white' : 'text-slate-500 hover:text-slate-700'
-                }`}
-              >
-                MATEMATIK
-              </button>
-              <button
-                data-key="FYSIK"
-                onClick={() => setSubject('FYSIK')}
-                className={`relative z-10 px-3 py-1.5 text-sm font-bold transition-colors border-0 bg-transparent ${
-                  subject === 'FYSIK' ? 'text-white' : 'text-slate-500 hover:text-slate-700'
-                }`}
-              >
-                FYSIK
-              </button>
-            </div>
-
-            {/* Type Toggle */}
-            <div ref={typeToggleRef} className="relative inline-flex items-center rounded-xl bg-slate-100/80 p-1 gap-1">
-              <div
-                className="absolute top-1 bottom-1 left-0 rounded-lg bg-slate-900 shadow-sm transition-all duration-300 ease-out"
-                style={{ ...typeSliderStyle }}
-              />
-              <button
-                data-key="OFFICIELLA"
-                onClick={() => setType('OFFICIELLA')}
-                className={`relative z-10 px-3 py-1.5 text-sm font-bold transition-colors border-0 bg-transparent ${
-                  type === 'OFFICIELLA' ? 'text-white' : 'text-slate-500 hover:text-slate-700'
-                }`}
-              >
-                OFFICIELLA
-              </button>
-              <button
-                data-key="VÅRA"
-                onClick={() => setType('VÅRA')}
-                className={`relative z-10 px-3 py-1.5 text-sm font-bold transition-colors border-0 bg-transparent ${
-                  type === 'VÅRA' ? 'text-white' : 'text-slate-500 hover:text-slate-700'
-                }`}
-              >
-                VÅRA
-              </button>
-            </div>
-
-            <div className="w-px h-8 bg-slate-200/60"></div>
-
-            {/* Eye Toggle */}
-            <button
-              onClick={toggleSolutionVisibility}
-              className="flex items-center justify-center w-10 h-10 rounded-xl bg-slate-50/50 border border-slate-200/60 hover:bg-slate-100 transition-colors"
-            >
-              {isSolutionVisible ? (
-                <Eye className="w-5 h-5 text-slate-700" />
-              ) : (
-                <EyeOff className="w-5 h-5 text-slate-700" />
-              )}
-            </button>
-
-            {/* Timer */}
-            <div className="flex items-center gap-3 bg-slate-50/50 border border-slate-200/60 rounded-xl pl-4 pr-2 py-1.5">
-              <div className="flex items-center gap-2">
-                <input
-                  type="number"
-                  value={timerMinutes}
-                  onChange={handleTimerInputChange}
-                  className="w-12 bg-transparent text-center font-bold text-slate-900 focus:outline-none border-b border-transparent focus:border-emerald-500 transition-colors"
-                  min="0"
-                  disabled={isTimerRunning}
+              {/* Subject Toggle */}
+              <div ref={subjectToggleRef} className="relative inline-flex items-center rounded-xl bg-slate-100/80 p-1 gap-1">
+                <div
+                  className="absolute top-1 bottom-1 left-0 rounded-lg bg-slate-900 shadow-sm transition-all duration-300 ease-out"
+                  style={{ ...subjectSliderStyle }}
                 />
-                <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">min</span>
-              </div>
-              
-              <div className="w-px h-6 bg-slate-200/60"></div>
-              
-              <div className="font-mono font-bold text-slate-900 w-[4.5ch]">
-                {formatTime(remainingTime)}
+                <button
+                  data-key="MATEMATIK"
+                  onClick={() => setSubject('MATEMATIK')}
+                  className={`relative z-10 px-3 py-1.5 text-sm font-bold transition-colors border-0 bg-transparent ${
+                    subject === 'MATEMATIK' ? 'text-white' : 'text-slate-500 hover:text-slate-700'
+                  }`}
+                >
+                  MATEMATIK
+                </button>
+                <button
+                  data-key="FYSIK"
+                  onClick={() => setSubject('FYSIK')}
+                  className={`relative z-10 px-3 py-1.5 text-sm font-bold transition-colors border-0 bg-transparent ${
+                    subject === 'FYSIK' ? 'text-white' : 'text-slate-500 hover:text-slate-700'
+                  }`}
+                >
+                  FYSIK
+                </button>
               </div>
 
-              <div className="flex gap-1">
+              {/* Type Toggle */}
+              <div ref={typeToggleRef} className="relative inline-flex items-center rounded-xl bg-slate-100/80 p-1 gap-1">
+                <div
+                  className="absolute top-1 bottom-1 left-0 rounded-lg bg-slate-900 shadow-sm transition-all duration-300 ease-out"
+                  style={{ ...typeSliderStyle }}
+                />
                 <button
-                  onClick={toggleTimer}
-                  className="w-8 h-8 flex items-center justify-center rounded-lg bg-white shadow-sm hover:bg-slate-50 border border-slate-200/60 transition-colors"
+                  data-key="OFFICIELLA"
+                  onClick={() => setType('OFFICIELLA')}
+                  className={`relative z-10 px-3 py-1.5 text-sm font-bold transition-colors border-0 bg-transparent ${
+                    type === 'OFFICIELLA' ? 'text-white' : 'text-slate-500 hover:text-slate-700'
+                  }`}
                 >
-                  {isTimerRunning ? (
-                    <Pause className="w-3.5 h-3.5 text-slate-700 ml-0.5" />
+                  OFFICIELLA
+                </button>
+                <button
+                  data-key="VÅRA"
+                  onClick={() => setType('VÅRA')}
+                  className={`relative z-10 px-3 py-1.5 text-sm font-bold transition-colors border-0 bg-transparent ${
+                    type === 'VÅRA' ? 'text-white' : 'text-slate-500 hover:text-slate-700'
+                  }`}
+                >
+                  VÅRA
+                </button>
+              </div>
+
+              <div className="w-px h-8 bg-slate-200/60"></div>
+
+              {/* Eye Toggle (identical design to year dropdown button) */}
+              <div>
+                <button
+                  onClick={() => setIsSolutionVisible((v) => !v)}
+                  aria-label="Toggle solutions"
+                  className="w-9 h-9 flex items-center justify-center bg-transparent hover:bg-slate-200/50 transition-colors border-0 p-0 rounded-r-xl"
+                >
+                  {isSolutionVisible ? (
+                    <Eye className="w-4 h-4 text-slate-700" />
                   ) : (
-                    <Play className="w-3.5 h-3.5 text-slate-700 ml-0.5" />
+                    <EyeOff className="w-4 h-4 text-slate-700" />
                   )}
                 </button>
+              </div>
 
-                <button
-                  onClick={resetTimer}
-                  className="w-8 h-8 flex items-center justify-center rounded-lg bg-white shadow-sm hover:bg-slate-50 border border-slate-200/60 transition-colors"
-                >
-                  <RotateCcw className="w-3.5 h-3.5 text-slate-700" />
-                </button>
+              {/* Timer */}
+              <div className="flex items-center gap-3 bg-slate-50/50 border border-slate-200/60 rounded-xl pl-4 pr-2 py-1.5">              
+                <div className="font-mono font-bold text-slate-900 w-[7.5ch]">
+                  {formatTime(remainingTime)}
+                </div>
+
+                <div className="flex items-center gap-1">
+                  <button
+                    onClick={toggleTimer}
+                    aria-label={isTimerRunning ? 'Pausa timer' : 'Starta timer'}
+                    className="w-7 h-4.5 flex items-center justify-center bg-transparent hover:bg-slate-200/50 disabled:opacity-30 transition-colors border-0 border-b border-slate-200/60 p-0 rounded-tr-xl flex-shrink-0"
+                  >
+                      {isTimerRunning ? (
+                        <Pause className="w-4 h-4 text-slate-700" />
+                      ) : (
+                        <Play className="w-4 h-4 text-slate-700" />
+                      )}
+                  </button>
+
+                  <button
+                    onClick={resetTimer}
+                    aria-label="Reset timer"
+                    className="w-7 h-4.5 flex items-center justify-center bg-transparent hover:bg-slate-200/50 disabled:opacity-30 transition-colors border-0 p-0 rounded-br-xl flex-shrink-0"
+                  >
+                    <RotateCcw className="w-4 h-4 text-slate-700" />
+                  </button>
+                </div>
               </div>
             </div>
           </div>
         </div>
+
       </div>
 
-      {/* Toggle Filters Button */}
+      {/* Toggle Filters Button (fills button fully) */}
       <button
         onClick={() => setIsFiltersCollapsed(!isFiltersCollapsed)}
-        className="absolute top-6 right-6 z-40 w-10 h-10 flex items-center justify-center rounded-xl bg-white/90 backdrop-blur-md text-slate-900 hover:bg-white shadow-lg border border-white/20 transition-all hover:scale-105"
+        className="w-[50px] h-[50px] absolute top-[30px] right-[50px] z-40 flex items-center justify-center bg-gray-100 hover:bg-slate-300/60"
+        aria-label="Toggle filters"
       >
         {isFiltersCollapsed ? (
-          <ChevronDown className="w-5 h-5" />
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="w-full h-full text-slate-700"
+          >
+            {/* scaled polyline to almost fill button */}
+            <polyline points="2 8 12 18 22 8" />
+          </svg>
         ) : (
-          <ChevronUp className="w-5 h-5" />
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="w-full h-full text-slate-700"
+          >
+            <polyline points="22 16 12 6 2 16" />
+          </svg>
         )}
       </button>
+
+
+
+      
 
       {/* PDF Viewer Section */}
       <div className="flex-1 grid grid-cols-2 h-full">
