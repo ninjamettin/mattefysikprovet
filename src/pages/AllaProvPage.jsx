@@ -13,6 +13,8 @@ const AllaProvPage = () => {
   const [timerMinutes, setTimerMinutes] = useState(180); // 3 hours in minutes
   const [remainingTime, setRemainingTime] = useState(180 * 60); // in seconds
   const [isTimerRunning, setIsTimerRunning] = useState(false);
+  const [editingPart, setEditingPart] = useState(null);
+  const [editValue, setEditValue] = useState('');
   
   const [examManifestUrl, setExamManifestUrl] = useState(null);
   const [solutionManifestUrl, setSolutionManifestUrl] = useState(null);
@@ -125,7 +127,9 @@ const AllaProvPage = () => {
   }, [subject]);
 
   // Generate array of years from 2007 to current year
-  const years = Array.from({ length: currentYear - 2007 + 1 }, (_, i) => currentYear - i);
+  const years = type === 'VÅRA' 
+    ? Array.from({ length: 25 }, (_, i) => i + 1)
+    : Array.from({ length: currentYear - 2007 + 1 }, (_, i) => currentYear - i);
 
   const handleYearSelect = (selectedYear) => {
     setYear(selectedYear);
@@ -133,14 +137,18 @@ const AllaProvPage = () => {
   };
 
   const incrementYear = () => {
-    if (year < currentYear) {
-      setYear(year + 1);
+    if (type === 'VÅRA') {
+      if (year < 25) setYear(year + 1);
+    } else {
+      if (year < currentYear) setYear(year + 1);
     }
   };
 
   const decrementYear = () => {
-    if (year > 2007) {
-      setYear(year - 1);
+    if (type === 'VÅRA') {
+      if (year > 1) setYear(year - 1);
+    } else {
+      if (year > 2007) setYear(year - 1);
     }
   };
 
@@ -157,17 +165,64 @@ const AllaProvPage = () => {
     setIsTimerRunning(!isTimerRunning);
   };
 
-  const formatTime = (seconds) => {
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    const secs = seconds % 60;
-    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  const handleTimeClick = (part, value) => {
+    setIsTimerRunning(false);
+    setEditingPart(part);
+    setEditValue(value.toString().padStart(2, '0'));
   };
 
+  const handleTimeChange = (e) => {
+    const val = e.target.value.replace(/\D/g, '').slice(0, 2);
+    setEditValue(val);
+  };
+
+  const saveTime = () => {
+    if (!editingPart) return;
+    
+    const currentHours = Math.floor(remainingTime / 3600);
+    const currentMinutes = Math.floor((remainingTime % 3600) / 60);
+    const currentSeconds = remainingTime % 60;
+    
+    const val = parseInt(editValue || '0', 10);
+    let newTime = remainingTime;
+
+    if (editingPart === 'hours') {
+      newTime = (val * 3600) + (currentMinutes * 60) + currentSeconds;
+    } else if (editingPart === 'minutes') {
+      newTime = (currentHours * 3600) + (Math.min(59, val) * 60) + currentSeconds;
+    } else if (editingPart === 'seconds') {
+      newTime = (currentHours * 3600) + (currentMinutes * 60) + Math.min(59, val);
+    }
+
+    setRemainingTime(newTime);
+    setEditingPart(null);
+  };
+
+  const handleTimeBlur = () => {
+    saveTime();
+  };
+
+  const handleTimeKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      saveTime();
+    }
+  };
+
+
+
   // Calculate Manifest URL based on year
-  const getManifestUrl = async (type) => {
-    const folder = type === 'exam' ? `${subject.toLowerCase()}_prov` : `${subject.toLowerCase()}_losningar`;
-    const fileNumber = year - 2006;
+  const getManifestUrl = async (manifestType) => {
+    let folder;
+    let fileNumber;
+
+    if (type === 'VÅRA') {
+      folder = manifestType === 'exam' ? `${subject.toLowerCase()}_prov_vara` : `${subject.toLowerCase()}_losningar_vara`;
+      fileNumber = year;
+    } else {
+      folder = manifestType === 'exam' ? `${subject.toLowerCase()}_prov` : `${subject.toLowerCase()}_losningar`;
+      fileNumber = year - 2006;
+    }
+
     const url = `/tiles/${folder}/${fileNumber}/manifest.json`;
     
     try {
@@ -228,7 +283,7 @@ const AllaProvPage = () => {
                 <div className="flex flex-col border-l border-slate-200/60">
                   <button
                     onClick={incrementYear}
-                    disabled={year >= currentYear}
+                    disabled={type === 'VÅRA' ? year >= 25 : year >= currentYear}
                     className="w-7 h-4.5 flex items-center justify-center bg-transparent hover:bg-slate-200/50 disabled:opacity-30 transition-colors border-0 border-b border-slate-200/60 p-0 rounded-tr-xl flex-shrink-0"
                     aria-label="Next year"
                   >
@@ -236,7 +291,7 @@ const AllaProvPage = () => {
                   </button>
                     <button
                     onClick={decrementYear}
-                    disabled={year <= 2007}
+                    disabled={type === 'VÅRA' ? year <= 1 : year <= 2007}
                     className="w-7 h-4.5 flex items-center justify-center bg-transparent hover:bg-slate-200/50 disabled:opacity-30 transition-colors border-0 p-0 rounded-br-xl flex-shrink-0"
                     aria-label="Previous year"
                   >
@@ -315,7 +370,10 @@ const AllaProvPage = () => {
                 />
                 <button
                   data-key="OFFICIELLA"
-                  onClick={() => setType('OFFICIELLA')}
+                  onClick={() => {
+                    setType('OFFICIELLA');
+                    setYear(2007);
+                  }}
                   className={`relative z-10 px-3 py-1.5 text-sm font-bold transition-colors border-0 bg-transparent ${
                     type === 'OFFICIELLA' ? 'text-white' : 'text-slate-500 hover:text-slate-700'
                   }`}
@@ -324,7 +382,10 @@ const AllaProvPage = () => {
                 </button>
                 <button
                   data-key="VÅRA"
-                  onClick={() => setType('VÅRA')}
+                  onClick={() => {
+                    setType('VÅRA');
+                    setYear(1);
+                  }}
                   className={`relative z-10 px-3 py-1.5 text-sm font-bold transition-colors border-0 bg-transparent ${
                     type === 'VÅRA' ? 'text-white' : 'text-slate-500 hover:text-slate-700'
                   }`}
@@ -352,8 +413,66 @@ const AllaProvPage = () => {
 
               {/* Timer */}
               <div className="flex items-center gap-3 bg-slate-50/50 border border-slate-200/60 rounded-xl pl-4 pr-2 py-1.5">              
-                <div className="font-mono font-bold text-slate-900 w-[7.5ch]">
-                  {formatTime(remainingTime)}
+                <div className="font-mono font-bold text-slate-900 flex items-center justify-center w-[8ch]">
+                  {/* Hours */}
+                  {editingPart === 'hours' ? (
+                    <input
+                      type="text"
+                      value={editValue}
+                      onChange={handleTimeChange}
+                      onBlur={handleTimeBlur}
+                      onKeyDown={handleTimeKeyDown}
+                      className="w-[2ch] bg-transparent border-b border-slate-900 focus:outline-none text-center p-0"
+                      autoFocus
+                    />
+                  ) : (
+                    <span 
+                      onClick={() => handleTimeClick('hours', Math.floor(remainingTime / 3600))}
+                      className="cursor-pointer hover:bg-slate-200 rounded px-0.5"
+                    >
+                      {Math.floor(remainingTime / 3600).toString().padStart(2, '0')}
+                    </span>
+                  )}
+                  :
+                  {/* Minutes */}
+                  {editingPart === 'minutes' ? (
+                    <input
+                      type="text"
+                      value={editValue}
+                      onChange={handleTimeChange}
+                      onBlur={handleTimeBlur}
+                      onKeyDown={handleTimeKeyDown}
+                      className="w-[2ch] bg-transparent border-b border-slate-900 focus:outline-none text-center p-0"
+                      autoFocus
+                    />
+                  ) : (
+                    <span 
+                      onClick={() => handleTimeClick('minutes', Math.floor((remainingTime % 3600) / 60))}
+                      className="cursor-pointer hover:bg-slate-200 rounded px-0.5"
+                    >
+                      {Math.floor((remainingTime % 3600) / 60).toString().padStart(2, '0')}
+                    </span>
+                  )}
+                  :
+                  {/* Seconds */}
+                  {editingPart === 'seconds' ? (
+                    <input
+                      type="text"
+                      value={editValue}
+                      onChange={handleTimeChange}
+                      onBlur={handleTimeBlur}
+                      onKeyDown={handleTimeKeyDown}
+                      className="w-[2ch] bg-transparent border-b border-slate-900 focus:outline-none text-center p-0"
+                      autoFocus
+                    />
+                  ) : (
+                    <span 
+                      onClick={() => handleTimeClick('seconds', remainingTime % 60)}
+                      className="cursor-pointer hover:bg-slate-200 rounded px-0.5"
+                    >
+                      {(remainingTime % 60).toString().padStart(2, '0')}
+                    </span>
+                  )}
                 </div>
 
                 <div className="flex items-center gap-1">

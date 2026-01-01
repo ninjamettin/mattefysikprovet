@@ -2,7 +2,7 @@
 2. Gratis användare och Premium användare tabell, bestäm vad de får tillgång till.
 2. autorättning/testa dig själv
 3. först pdf lösningar sedan video lösningar kanske även med kamera på
-4. Om mig sidan
+4. Om oss sidan
 5. Om provet sidan som fokuserar på hur enkelt det är och hur SO ämnen är så onödiga egentligen för ingenjörsutbildningar.
 OBS! Ska också täcka att min sida är inte officiell och inte sponsrad av högskoleverket eller liknande och en länk till
 officiella sidan med anmälningsinfo osv.
@@ -34,7 +34,7 @@ Jag som grundaren ska direkt mejla ut till kunden *****
 Gratis användare:
 
 - Får tillgång till 1 lösningsförslag och 1 av våra konstruerade prov.
-- De kan rätta sig själva och se vilka program de hade kommit in på detta år.
+- De kan rätta sig själva och se vilka program de hade kommit in på detta år. STOR IMPLEMENTATION OM JAG GÖR DET
 - De kan se videorna för den uppgift de har tillgång till.
 - De kan få rekommendationer att plugga på något särskilt baserad på provet de har gjort.
 - 
@@ -50,3 +50,12 @@ Premium användare:
 TODO:
 
 When logga ut is pressed, a box with are you sure appears and if pressed user is logged out to homescreen.
+
+TYP AV MATTE FRÅGOR:
+
+1. Alternativ, a, b, c, d
+2. Matematisk uttryck, som i nokflex
+3. "Det finns inte", användarna kan bara lägga in en "-" för att indikera att det inte finns något svar.
+
+Vi behöver en matematisk uttryck renderer 
+

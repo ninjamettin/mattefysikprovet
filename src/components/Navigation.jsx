@@ -10,6 +10,13 @@ function Navigation() {
   const navigate = useNavigate()
   const location = useLocation()
   const { isLoggedIn, profilePic, logout } = useAuth()
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false)
+
+  const handleLogout = () => {
+    logout()
+    setShowLogoutConfirm(false)
+    navigate('/')
+  }
 
   console.log('Navigation - isLoggedIn:', isLoggedIn, 'profilePic:', profilePic);
 
@@ -199,7 +206,7 @@ function Navigation() {
                     Fortsätt Plugga
                   </button>
                   <button 
-                    onClick={() => { logout(); setMobileMenuOpen(false); }} 
+                    onClick={() => { setShowLogoutConfirm(true); setMobileMenuOpen(false); }} 
                     className="px-4 py-3 text-[15px] font-bold text-slate-900 bg-white border-2 border-slate-300 rounded-xl transition-all text-left"
                   >
                     Logga ut
@@ -215,6 +222,29 @@ function Navigation() {
                   </button>
                 </>
               )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showLogoutConfirm && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl p-6 shadow-2xl max-w-sm w-full animate-in fade-in zoom-in duration-200">
+            <h3 className="text-xl font-bold text-slate-900 mb-2">Logga ut?</h3>
+            <p className="text-slate-600 mb-6">Är du säker på att du vill logga ut?</p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setShowLogoutConfirm(false)}
+                className="flex-1 px-4 py-2.5 font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors"
+              >
+                Avbryt
+              </button>
+              <button
+                onClick={handleLogout}
+                className="flex-1 px-4 py-2.5 font-semibold text-white bg-red-600 hover:bg-red-700 rounded-xl transition-colors"
+              >
+                Logga ut
+              </button>
             </div>
           </div>
         </div>

@@ -42,6 +42,8 @@ const Dashboard = () => {
   };
 
   const isAllaProv = location.pathname === '/dashboard/alla-prov';
+  const isTestaDigSjalv = location.pathname === '/dashboard/testa-dig-sjalv';
+  const isFullScreen = isAllaProv || isTestaDigSjalv;
 
   return (
     <div className="flex min-h-screen bg-[#F8FAFC]">
@@ -147,8 +149,8 @@ const Dashboard = () => {
 
       {/* Main Content Area */}
       <main className="flex-1 flex flex-col min-w-0">
-        <div className={`flex-1 relative ${isAllaProv ? 'h-screen' : 'p-10 overflow-y-auto'}`}>
-          <div className={isAllaProv ? 'w-full h-full' : 'max-w-7xl mx-auto'}>
+        <div className={`flex-1 relative ${isFullScreen ? 'h-screen' : 'p-10 overflow-y-auto'}`}>
+          <div className={isFullScreen ? 'w-full h-full' : 'max-w-7xl mx-auto'}>
             <Routes>
               <Route path="/" element={<ProfilPage />} />
               <Route path="/profil" element={<ProfilPage />} />
