@@ -1,147 +1,261 @@
+import { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+import aboutUsImage from '../assets/aboutus_1.png';
+
+/**
+ * AboutUs Component
+ * - Full-width rectangular sections (No rounded corners)
+ * - Asymmetrical alignment and diagonal geometric styling
+ * - High-performance 3D transforms via CSS Variables
+ * - System cursor restored
+ */
 function AboutUs() {
+  const [visibleSections, setVisibleSections] = useState(new Set());
+  const sectionRefs = useRef([]);
+  const containerRef = useRef(null);
+  const navigate = useNavigate();
+  const [isHoveringVision, setIsHoveringVision] = useState(false);
+
+  // High-performance mouse tracking for 3D effects (Zero state re-renders)
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      if (!containerRef.current) return;
+      const { clientX, clientY } = e;
+      const xPct = (clientX / window.innerWidth - 0.5) * 2; // -1 to 1
+      const yPct = (clientY / window.innerHeight - 0.5) * 2; // -1 to 1
+      
+      containerRef.current.style.setProperty('--mouse-x-pct', xPct);
+      containerRef.current.style.setProperty('--mouse-y-pct', yPct);
+      containerRef.current.style.setProperty('--mouse-x-px', `${clientX}px`);
+      containerRef.current.style.setProperty('--mouse-y-px', `${clientY}px`);
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
+
+  // Intersection Observer for reveal animations
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setVisibleSections((prev) => new Set([...prev, entry.target.dataset.section]));
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    sectionRefs.current.forEach((ref) => {
+      if (ref) observer.observe(ref);
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
+  const handleContactClick = () => {
+    navigate('/#intresseanmälan');
+  };
+
+  const handleStartClick = () => {
+    navigate('/#kurser');
+  };
+
   return (
-    <section id="om-oss" className="max-w-[1400px] mx-auto px-6 md:px-12 py-32 pt-32 md:pt-40">
-      <div className="text-center mb-20">
-        <span className="inline-block px-4 py-1 bg-blue-50 text-blue-700 rounded-full text-sm font-medium mb-4 animate-slide-in-from-top-3">
-          Grundaren
-        </span>
-        <h2 className="text-4xl md:text-5xl font-semibold tracking-tight text-slate-900 mb-6 animate-fade-in">
-          Om Oss
-        </h2>
-        <p className="text-lg text-slate-700 max-w-3xl mx-auto leading-relaxed">
-          Lär känna personen bakom MaFyProvet och upptäck varför denna plattform är annorlunda.
-        </p>
-      </div>
+    <main 
+      ref={containerRef}
+      className="bg-[#FAF9F6] text-slate-900 selection:bg-blue-500 overflow-x-hidden"
+      style={{
+        '--mouse-x-pct': 0,
+        '--mouse-y-pct': 0,
+        '--tilt-intensity': '10deg'
+      }}
+    >
+      {/* Dynamic Background Gradient */}
+      <div 
+        className="fixed inset-0 pointer-events-none z-0 opacity-40"
+        style={{
+          background: `radial-gradient(800px circle at var(--mouse-x-px) var(--mouse-y-px), rgba(59, 130, 246, 0.15), transparent 80%)`
+        }}
+      />
 
-      {/* Main Content */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
-        {/* Left Column - Profile */}
-        <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-3xl p-10 text-white shadow-2xl relative overflow-hidden">
-          {/* Decorative gradients */}
-          <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 rounded-full -translate-y-32 translate-x-32 blur-3xl"></div>
-          <div className="absolute bottom-0 left-0 w-64 h-64 bg-purple-500/10 rounded-full translate-y-32 -translate-x-32 blur-3xl"></div>
+      {/* Section 1: Vilka är vi? (Left Aligned / Geometric Split) */}
+      <section 
+        ref={(el) => (sectionRefs.current[0] = el)}
+        data-section="section1"
+        className="relative w-full min-h-screen flex items-center overflow-hidden border-b border-slate-200"
+      >
+        <div 
+          className="absolute inset-0 bg-blue-500/5 skew-y-3 origin-right translate-y-20 transition-transform duration-1000" 
+          style={{ transform: visibleSections.has('section1') ? 'skewY(-3deg) translateY(0)' : 'skewY(0) translateY(100%)' }}
+        />
+        
+        <div className="relative z-10 w-full px-8 md:px-20 grid grid-cols-1 md:grid-cols-2 gap-12">
+          <div className={`transition-all duration-1000 delay-300 ${visibleSections.has('section1') ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-20'}`}>
+            <h1 className="text-7xl md:text-9xl font-black uppercase tracking-tighter leading-none mb-8 text-slate-900">
+              Vilka <br /> <span className="text-blue-600">Är Vi?</span>
+            </h1>
+            <p className="text-xl md:text-3xl font-light text-slate-600 max-w-xl leading-relaxed">
+              Vi är tekniska fysiker från KTH. Vi har knäckt koden för matematik- och fysikprovet och transformerar nu hur studenter förbereder sig för sin framtid.
+            </p>
+          </div>
+          <div className={`hidden md:flex justify-end items-center transition-all duration-1000 delay-500 ${visibleSections.has('section1') ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-20'}`}>
+            <img 
+              src={aboutUsImage} 
+              alt="KTH Emblem" 
+              className="max-w-full h-auto max-h-[800px] object-contain drop-shadow-2xl scale-[1.5] origin-right"
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* Section 2: Varför skapade vi... (Right Aligned / 3D Rotation) */}
+      <section 
+        ref={(el) => (sectionRefs.current[1] = el)}
+        data-section="section2"
+        className="relative w-full min-h-screen flex items-center bg-[#FAF9F6] text-slate-900 py-24 overflow-hidden"
+      >
+        <div className="relative z-10 w-full px-8 md:px-20 flex flex-col items-end text-right">
+          <div 
+            className="perspective-1000 transform-gpu"
+            style={{
+              transform: `
+                rotateX(calc(var(--mouse-y-pct) * var(--tilt-intensity) * -1))
+                rotateY(calc(var(--mouse-x-pct) * var(--tilt-intensity)))
+              `,
+              willChange: 'transform'
+            }}
+          >
+            <h2 className="text-6xl md:text-8xl font-black uppercase tracking-tighter leading-[0.9] mb-12 text-slate-900">
+              Varför skapade vi <br /> 
+              <span className="bg-blue-600 text-white px-4">mattefysikprovet.se?</span>
+            </h2>
+          </div>
+
+          <div className={`max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-6 transition-all duration-1000 ${visibleSections.has('section2') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-20'}`}>
+            <div className="group relative p-10 border border-slate-200 bg-white shadow-xl hover:border-blue-500/50 transition-all duration-500 overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-600 via-blue-500 to-blue-700 opacity-0 group-hover:opacity-100 transition-opacity duration-500"/>
+              <div className="relative z-10">
+                <span className="text-5xl font-black mb-6 block text-blue-100 group-hover:text-white transition-colors">01</span>
+                <p className="text-xl font-light leading-relaxed text-slate-600 group-hover:text-white transition-colors">
+                  Bristen på specialiserat material i Sverige lämnade studenter i mörkret. <span className="font-bold text-blue-600 group-hover:text-white">Vi tände ljuset.</span>
+                </p>
+              </div>
+            </div>
+            <div className="group relative p-10 border border-slate-200 bg-white shadow-xl hover:border-blue-500/50 transition-all duration-500 overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-600 via-blue-500 to-blue-700 opacity-0 group-hover:opacity-100 transition-opacity duration-500"/>
+              <div className="relative z-10">
+                <span className="text-5xl font-black mb-6 block text-blue-100 group-hover:text-white transition-colors">02</span>
+                <p className="text-xl font-light leading-relaxed text-slate-600 group-hover:text-white transition-colors">
+                  Vi ville demokratisera tillgången till de strategier som krävs för att nå <span className="font-bold text-blue-600 group-hover:text-white">KTH och Chalmers.</span>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Section 3: Vision (Center Aligned / Full Width Image/Pattern Overlay) */ }
+      <section 
+        ref={(el) => (sectionRefs.current[2] = el)}
+        data-section="section3"
+        className="relative w-full min-h-[80vh] flex flex-col items-center justify-center border-t border-slate-200 bg-white overflow-hidden"
+      >
+        {/* Giant Watermark */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[25vw] font-black text-slate-50 select-none pointer-events-none whitespace-nowrap z-0">
+          VISION
+        </div>
+
+        {/* Strong Mouse Light Effect */}
+        <div 
+          className="absolute inset-0 pointer-events-none z-0"
+          style={{
+            background: `radial-gradient(600px circle at var(--mouse-x-px) var(--mouse-y-px), rgba(37, 99, 235, 0.15), transparent 40%)`
+          }}
+        />
+        
+        <div className={`relative z-10 max-w-7xl w-full mx-auto px-8 md:px-0 transition-all duration-1000 ${visibleSections.has('section3') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-20'}`}>
           
-          <div className="relative z-10">
-            <div className="w-32 h-32 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold text-5xl shadow-2xl mb-6 mx-auto">
-              B
-            </div>
-            <h3 className="text-3xl font-bold mb-2 text-center">Burak Gündoğdu</h3>
-            <p className="text-lg text-slate-300 mb-8 text-center">Grundare & Teknisk Fysiker, KTH</p>
+          {/* Main Content - Left Aligned */}
+          <div className="text-left max-w-4xl">
+            <h2 className="text-7xl md:text-9xl font-black uppercase mb-12 text-slate-900 tracking-tighter relative inline-block">
+              Vår <span className="text-blue-600">Vision</span>
+              {/* Decorative underline */}
+              <div className="absolute -bottom-4 left-5 w-1/3 h-2 bg-blue-600" />
+            </h2>
             
-            <div className="space-y-4 bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20">
-              <div className="flex items-start gap-3">
-                <div className="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <i data-lucide="graduation-cap" className="w-5 h-5 text-blue-300"></i>
-                </div>
-                <div>
-                  <h4 className="font-bold text-white mb-1">Utbildning</h4>
-                  <p className="text-slate-300 text-sm">Teknisk Fysik, KTH</p>
-                </div>
-              </div>
-              
-              <div className="flex items-start gap-3">
-                <div className="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <i data-lucide="award" className="w-5 h-5 text-green-300"></i>
-                </div>
-                <div>
-                  <h4 className="font-bold text-white mb-1">Erfarenhet</h4>
-                  <p className="text-slate-300 text-sm">Klarade matematik- och fysikprovet</p>
-                </div>
-              </div>
-              
-              <div className="flex items-start gap-3">
-                <div className="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <i data-lucide="users" className="w-5 h-5 text-purple-300"></i>
-                </div>
-                <div>
-                  <h4 className="font-bold text-white mb-1">Hjälpt studenter</h4>
-                  <p className="text-slate-300 text-sm">10 000+ studenter sedan start</p>
-                </div>
-              </div>
-            </div>
+            <p className="text-3xl md:text-4xl font-bold text-slate-800 leading-tight mb-50">
+              ATT VARA DEN SJÄLVKLARA <span className="text-blue-600">KATALYSATORN</span> FÖR NÄSTA GENERATIONS INGENJÖRER.
+            </p>
+            
           </div>
         </div>
+      </section>
 
-        {/* Right Column - Story */}
-        <div className="space-y-6">
-          <div className="bg-white rounded-3xl p-8 shadow-lg border border-slate-100">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl flex items-center justify-center">
-                <i data-lucide="target" className="w-6 h-6 text-blue-600"></i>
-              </div>
-              <h3 className="text-2xl font-bold text-slate-900">Min resa</h3>
-            </div>
-            <p className="text-slate-700 leading-relaxed mb-4">
-              Jag klarade matematik- och fysikprovet själv och kom in på Teknisk Fysik på KTH - en av Sveriges mest prestigefyllda och konkurrenskraftiga utbildningar.
-            </p>
-            <p className="text-slate-700 leading-relaxed">
-              <strong className="text-slate-900">Jag vet exakt vad som krävs</strong> för att lyckas eftersom jag själv har gått igenom samma process. Varje övning, förklaring och strategi på denna plattform bygger på min egen erfarenhet och kunskap.
-            </p>
+      {/* Section 4: Stats (Asymmetric Grid) */}
+      <section 
+        ref={(el) => (sectionRefs.current[3] = el)}
+        data-section="section4"
+        className="w-full grid grid-cols-1 md:grid-cols-4 bg-[#FAF9F6] border-y border-slate-200"
+      >
+        {[
+          { label: 'Hjälpta studenter', val: '10 000+' },
+          { label: 'Godkända', val: '92%' },
+          { label: 'Övningsuppgifter', val: '5000+' },
+          { label: 'Provkopior', val: '25+' }
+        ].map((s, i) => (
+          <div key={i} className="group p-16 border-r border-slate-200 last:border-r-0 hover:bg-blue-600 transition-colors duration-300">
+            <div className="text-6xl font-black mb-2 text-slate-900 group-hover:text-white transition-colors">{s.val}</div>
+            <div className="text-sm uppercase tracking-widest text-slate-500 group-hover:text-blue-100 transition-colors">{s.label}</div>
           </div>
+        ))}
+      </section>
 
-          <div className="bg-white rounded-3xl p-8 shadow-lg border border-slate-100">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 bg-gradient-to-br from-green-50 to-green-100 rounded-xl flex items-center justify-center">
-                <i data-lucide="lightbulb" className="w-6 h-6 text-green-600"></i>
-              </div>
-              <h3 className="text-2xl font-bold text-slate-900">Varför jag skapade MaFyProvet</h3>
+      {/* Section 5: Contact (Full Screen Contrast) */}
+      <section 
+        ref={(el) => (sectionRefs.current[4] = el)}
+        data-section="section5"
+        className="relative w-full h-screen flex flex-col items-center justify-center bg-blue-600 text-white"
+      >
+        <div className="absolute inset-0 overflow-hidden">
+            <div 
+              className="text-[20vw] font-black opacity-10 whitespace-nowrap select-none"
+              style={{ transform: `translateX(calc(var(--mouse-x-pct) * -50px))` }}
+            >
+              KONTAKTA OSS KONTAKTA OSS
             </div>
-            <p className="text-slate-700 leading-relaxed mb-4">
-              Under min egen förberedelse insåg jag att det fanns <strong className="text-slate-900">ingen organisation i Sverige</strong> som specialiserade sig på att hjälpa studenter med mattefysikprovet på ett strukturerat och effektivt sätt.
-            </p>
-            <p className="text-slate-700 leading-relaxed">
-              Jag ville skapa något bättre - en plattform där studenter får tillgång till allt de behöver på ett ställe, med material som faktiskt fungerar.
-            </p>
-          </div>
+        </div>
+        
+        <div className={`relative z-10 text-center transition-all duration-1000 delay-200 ${visibleSections.has('section5') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-20'}`}>
+          <h3 className="text-6xl md:text-9xl font-black uppercase mb-12 leading-none">Redo att <br/> dominera?</h3>
+          
+          <div className="flex flex-col gap-6 items-center">
+            <button 
+              onClick={handleStartClick}
+              className="group relative bg-white text-black px-20 py-8 text-2xl font-bold uppercase tracking-widest hover:bg-black hover:text-white transition-all duration-300"
+            >
+              Börja nu
+              <div className="absolute inset-0 border-2 border-white translate-x-2 translate-y-2 group-hover:translate-x-0 group-hover:translate-y-0 transition-transform" />
+            </button>
 
-          <div className="bg-white rounded-3xl p-8 shadow-lg border border-slate-100">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl flex items-center justify-center">
-                <i data-lucide="heart" className="w-6 h-6 text-purple-600"></i>
-              </div>
-              <h3 className="text-2xl font-bold text-slate-900">Min vision</h3>
-            </div>
-            <p className="text-slate-700 leading-relaxed">
-              Att hjälpa varje student som drömmer om en teknisk utbildning att uppnå sitt mål. Jag tror på att <strong className="text-slate-900">rätt förberedelse + dedikation = framgång</strong>, och jag är här för att guida dig genom hela resan.
-            </p>
+            <button 
+              onClick={handleContactClick}
+              className="group relative bg-black text-white px-20 py-8 text-2xl font-bold uppercase tracking-widest hover:bg-white hover:text-black transition-all duration-300"
+            >
+              Anmäl Intresse
+              <div className="absolute inset-0 border-2 border-black translate-x-2 translate-y-2 group-hover:translate-x-0 group-hover:translate-y-0 transition-transform" />
+            </button>
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* Key Achievements */}
-      <div className="bg-gradient-to-br from-slate-50 to-slate-100 rounded-3xl p-10 border border-slate-200 shadow-lg">
-        <h3 className="text-3xl font-bold text-slate-900 text-center mb-10">Viktiga milstolpar</h3>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          <div className="text-center group hover:scale-110 transition-transform">
-            <div className="text-5xl font-bold mb-2 bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">10k+</div>
-            <div className="text-slate-700 font-medium">Hjälpta studenter</div>
-          </div>
-          <div className="text-center group hover:scale-110 transition-transform">
-            <div className="text-5xl font-bold mb-2 bg-gradient-to-r from-green-600 to-green-800 bg-clip-text text-transparent">92%</div>
-            <div className="text-slate-700 font-medium">Godkända studenter</div>
-          </div>
-          <div className="text-center group hover:scale-110 transition-transform">
-            <div className="text-5xl font-bold mb-2 bg-gradient-to-r from-purple-600 to-purple-800 bg-clip-text text-transparent">5000+</div>
-            <div className="text-slate-700 font-medium">Övningsuppgifter</div>
-          </div>
-          <div className="text-center group hover:scale-110 transition-transform">
-            <div className="text-5xl font-bold mb-2 bg-gradient-to-r from-amber-600 to-amber-800 bg-clip-text text-transparent">25+</div>
-            <div className="text-slate-700 font-medium">Egna provkopior</div>
-          </div>
-        </div>
-      </div>
-
-      {/* Contact CTA */}
-      <div className="mt-16 text-center bg-gradient-to-br from-blue-50 to-blue-100 rounded-3xl p-10 border-2 border-blue-200 shadow-lg">
-        <h3 className="text-3xl font-bold text-slate-900 mb-4">Vill du komma i kontakt?</h3>
-        <p className="text-lg text-slate-700 mb-8 max-w-2xl mx-auto">
-          Jag tar personlig kontakt med alla som är intresserade av Premium-medlemskap. Anmäl ditt intresse så hör jag av mig!
-        </p>
-        <button className="bg-gradient-to-r from-blue-600 to-blue-800 text-white px-10 py-4 rounded-full text-lg font-bold hover:from-blue-700 hover:to-blue-900 hover:scale-105 active:scale-95 transition-all shadow-xl" aria-label="Kontakta mig">
-          Kontakta mig →
-        </button>
-      </div>
-    </section>
+      <style dangerouslySetInnerHTML={{ __html: `
+        html { scroll-behavior: smooth; }
+        .perspective-1000 { perspective: 1000px; }
+        .transform-gpu { transform-style: preserve-3d; }
+      ` }} />
+    </main>
   );
 }
 

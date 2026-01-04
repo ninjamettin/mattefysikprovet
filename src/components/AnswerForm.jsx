@@ -3,6 +3,7 @@ import 'mathlive';
 
 const MathInput = ({ questionNumber, onAnswerChange }) => {
   const mf = useRef(null);
+  const previewRef = useRef(null);
   const [latex, setLatex] = useState('');
 
   useEffect(() => {
@@ -41,6 +42,15 @@ const MathInput = ({ questionNumber, onAnswerChange }) => {
     }
   }, [questionNumber, onAnswerChange]);
 
+  // Render LaTeX preview with MathJax whenever latex changes
+  useEffect(() => {
+    if (latex && latex.trim() !== '' && previewRef.current && window.MathJax) {
+      window.MathJax.typesetPromise([previewRef.current]).catch((err) => {
+        console.error('MathJax typesetting failed:', err);
+      });
+    }
+  }, [latex]);
+
   return (
     <div className="space-y-2">
       <math-field 
@@ -51,7 +61,7 @@ const MathInput = ({ questionNumber, onAnswerChange }) => {
       {latex && latex.trim() !== '' && (
         <div className="mt-2 p-3 bg-slate-50 rounded-lg border border-slate-200">
           <p className="text-xs text-slate-500 mb-1">Ditt svar:</p>
-          <div className="text-lg" dangerouslySetInnerHTML={{ __html: `\\(${latex}\\)` }} />
+          <div ref={previewRef} className="text-lg" dangerouslySetInnerHTML={{ __html: `\\(${latex}\\)` }} />
         </div>
       )}
     </div>

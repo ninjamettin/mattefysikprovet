@@ -140,3 +140,22 @@ button:focus-visible {
     background-color: transparent;
   }
 }
+
+@keyframes digital-fire {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(-200px) scale(0);
+    opacity: 0;
+  }
+}
+
+.animate-digital-fire {
+  animation: digital-fire 4s ease-out infinite;
+}
+

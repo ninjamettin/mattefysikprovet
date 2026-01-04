@@ -30,12 +30,21 @@ function ScrollToTop() {
   const location = useLocation()
   
   useEffect(() => {
-    window.scrollTo(0, 0)
+    if (location.hash) {
+      const element = document.getElementById(location.hash.substring(1));
+      if (element) {
+        setTimeout(() => {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
+      }
+    } else {
+      window.scrollTo(0, 0)
+    }
     // Re-initialize Lucide icons on route change
     if (window.lucide) {
       setTimeout(() => window.lucide.createIcons(), 100)
     }
-  }, [location.pathname])
+  }, [location.pathname, location.hash])
   
   return null
 }

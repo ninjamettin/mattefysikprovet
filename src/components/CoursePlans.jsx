@@ -1,8 +1,31 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 
 function CoursePlans() {
   const [freePlanTilt, setFreePlanTilt] = useState({ rotateX: 0, rotateY: 8 });
   const [premiumPlanTilt, setPremiumPlanTilt] = useState({ rotateX: 0, rotateY: -8 });
+  const [isHoveringPremium, setIsHoveringPremium] = useState(false);
+
+  // Memoize particles to prevent re-render jitter during mouse movement
+  const particles = useMemo(() => {
+    return [...Array(40)].map((_, i) => ({
+      id: i,
+      left: Math.random() * 100,
+      delay: Math.random() * 4,
+      // Faster duration: 1.5-3.5s instead of 2-5s
+      duration: 1.5 + Math.random() * 2, 
+      height: 20 + Math.random() * 60
+    }));
+  }, []);
+
+  const embers = useMemo(() => {
+    return [...Array(20)].map((_, i) => ({
+      id: i,
+      left: Math.random() * 100,
+      delay: Math.random() * 5,
+      // Faster duration: 2-4s instead of 3-5s
+      duration: 2 + Math.random() * 2
+    }));
+  }, []);
 
   const handleMouseMove = (e, setter, initialRotateY) => {
     const card = e.currentTarget;
@@ -85,54 +108,106 @@ function CoursePlans() {
 
         {/* Premium Plan */}
         <div 
-          className="group bg-slate-900 rounded-2xl p-10 shadow-2xl relative overflow-hidden hover:shadow-emerald-500/10 transition-all duration-500 flex flex-col"
+          className="group bg-slate-900 rounded-2xl p-10 shadow-[0_0_20px_rgba(234,179,8,0.15)] relative overflow-hidden border-[3px] border-yellow-500/70 hover:border-yellow-400 hover:shadow-[0_0_50px_rgba(234,179,8,0.4)] transition-all duration-500 flex flex-col"
           style={{
             transform: `rotateX(${premiumPlanTilt.rotateX}deg) rotateY(${premiumPlanTilt.rotateY}deg)`,
             transition: 'transform 0.2s ease-out, box-shadow 0.5s'
           }}
           onMouseMove={(e) => handleMouseMove(e, setPremiumPlanTilt, -8)}
-          onMouseLeave={() => handleMouseLeave(setPremiumPlanTilt, -8)}
+          onMouseEnter={() => setIsHoveringPremium(true)}
+          onMouseLeave={() => {
+            handleMouseLeave(setPremiumPlanTilt, -8);
+            setIsHoveringPremium(false);
+          }}
         >
+          {/* Shiny Gradient Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-br from-orange-500/10 via-transparent to-yellow-500/5 opacity-50 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
           
+          {/* Digital Fire Animation */}
+          <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            {/* Base Glow */}
+            <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-orange-600/20 via-yellow-500/10 to-transparent blur-2xl opacity-60" />
+            
+            {/* Rising Digital Bits */}
+            {particles.map((p, i) => {
+              // Show first 15 always, show rest only on hover
+              const isVisible = i < 15 || isHoveringPremium;
+              if (!isVisible) return null;
+
+              return (
+                <div 
+                  key={p.id}
+                  className="absolute bottom-0 w-[2px] bg-gradient-to-t from-orange-400 to-transparent animate-digital-fire opacity-0"
+                  style={{
+                    left: `${p.left}%`,
+                    animationDelay: `${p.delay}s`,
+                    animationDuration: `${p.duration}s`,
+                    height: `${p.height}px`
+                  }}
+                />
+              );
+            })}
+            
+            {/* Rising Embers */}
+            {embers.map((e, i) => {
+              // Show first 8 always, show rest only on hover
+              const isVisible = i < 8 || isHoveringPremium;
+              if (!isVisible) return null;
+
+              return (
+                <div 
+                  key={`ember-${e.id}`}
+                  className="absolute bottom-0 w-1 h-1 bg-yellow-300 rounded-full blur-[1px] animate-digital-fire opacity-0"
+                  style={{
+                    left: `${e.left}%`,
+                    animationDelay: `${e.delay}s`,
+                    animationDuration: `${e.duration}s`
+                  }}
+                />
+              );
+            })}
+          </div>
 
           
           <div className="mb-8 relative z-10">
-            <h3 className="text-3xl font-bold text-white mb-4">Premium</h3>
+            <h3 className="text-3xl font-bold text-white mb-4 flex items-center gap-3">
+              Premium 
+            </h3>
             <p className="text-slate-300 leading-relaxed">Full tillgång och experthjälp</p>
           </div>
 
           <ul className="space-y-3 mb-8 relative z-10 flex-grow">
             <li className="flex items-start gap-3">
-              <i data-lucide="check" className="w-5 h-5 text-emerald-400 mt-0.5 flex-shrink-0"></i>
+              <i data-lucide="check" className="w-5 h-5 text-yellow-400 drop-shadow-[0_0_3px_rgba(250,204,21,0.8)] mt-0.5 flex-shrink-0"></i>
               <span className="text-white font-medium">5 000+ övningsuppgifter</span>
             </li>
             <li className="flex items-start gap-3">
-              <i data-lucide="check" className="w-5 h-5 text-emerald-400 mt-0.5 flex-shrink-0"></i>
+              <i data-lucide="check" className="w-5 h-5 text-yellow-400 drop-shadow-[0_0_3px_rgba(250,204,21,0.8)] mt-0.5 flex-shrink-0"></i>
               <span className="text-white">200+ videogenomgångar</span>
             </li>
             <li className="flex items-start gap-3">
-              <i data-lucide="check" className="w-5 h-5 text-emerald-400 mt-0.5 flex-shrink-0"></i>
+              <i data-lucide="check" className="w-5 h-5 text-yellow-400 drop-shadow-[0_0_3px_rgba(250,204,21,0.8)] mt-0.5 flex-shrink-0"></i>
               <span className="text-white">Expertförklaringar</span>
             </li>
             <li className="flex items-start gap-3">
-              <i data-lucide="check" className="w-5 h-5 text-emerald-400 mt-0.5 flex-shrink-0"></i>
+              <i data-lucide="check" className="w-5 h-5 text-yellow-400 drop-shadow-[0_0_3px_rgba(250,204,21,0.8)] mt-0.5 flex-shrink-0"></i>
               <span className="text-white">Personlig handledare</span>
             </li>
             <li className="flex items-start gap-3">
-              <i data-lucide="check" className="w-5 h-5 text-emerald-400 mt-0.5 flex-shrink-0"></i>
+              <i data-lucide="check" className="w-5 h-5 text-yellow-400 drop-shadow-[0_0_3px_rgba(250,204,21,0.8)] mt-0.5 flex-shrink-0"></i>
               <span className="text-white">Detaljerade analyser</span>
             </li>
             <li className="flex items-start gap-3">
-              <i data-lucide="check" className="w-5 h-5 text-emerald-400 mt-0.5 flex-shrink-0"></i>
+              <i data-lucide="check" className="w-5 h-5 text-yellow-400 drop-shadow-[0_0_3px_rgba(250,204,21,0.8)] mt-0.5 flex-shrink-0"></i>
               <span className="text-white">Simulerade prov</span>
             </li>
             <li className="flex items-start gap-3">
-              <i data-lucide="check" className="w-5 h-5 text-emerald-400 mt-0.5 flex-shrink-0"></i>
+              <i data-lucide="check" className="w-5 h-5 text-yellow-400 drop-shadow-[0_0_3px_rgba(250,204,21,0.8)] mt-0.5 flex-shrink-0"></i>
               <span className="text-white font-medium">Skräddarsytt upplägg</span>
             </li>
           </ul>
 
-          <button className="w-full bg-white text-slate-900 py-3.5 font-semibold hover:bg-slate-50 transition-all relative z-10" aria-label="Välj Premium">
+          <button className="w-full bg-gradient-to-r from-yellow-400 to-yellow-600 text-slate-900 py-3.5 font-bold hover:from-yellow-300 hover:to-yellow-500 transition-all relative z-10 shadow-lg shadow-yellow-500/20" aria-label="Välj Premium">
             Välj Premium
           </button>
         </div>
@@ -141,7 +216,7 @@ function CoursePlans() {
       
 
       {/* Intresseanmälan Section */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-3xl p-12 md:p-16 text-white shadow-2xl">
+      <div id="intresseanmälan" className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-3xl p-12 md:p-16 text-white shadow-2xl">
         {/* Decorative gradients */}
         <div className="absolute top-0 left-0 w-96 h-96 bg-blue-500/10 rounded-full -translate-x-48 -translate-y-48 blur-3xl"></div>
         <div className="absolute bottom-0 right-0 w-96 h-96 bg-purple-500/10 rounded-full translate-x-48 translate-y-48 blur-3xl"></div>

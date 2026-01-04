@@ -49,13 +49,27 @@ Premium användare:
 
 TODO:
 
-When logga ut is pressed, a box with are you sure appears and if pressed user is logged out to homescreen.
+When logga ut is pressed, a box with are you sure appears and if pressed user is logged out to homescreen. KLAR
 
-TYP AV MATTE FRÅGOR:
+TYP AV MATTE FRÅGOR: KLAR 
 
 1. Alternativ, a, b, c, d
 2. Matematisk uttryck, som i nokflex
 3. "Det finns inte", användarna kan bara lägga in en "-" för att indikera att det inte finns något svar.
 
-Vi behöver en matematisk uttryck renderer 
+Vi behöver en matematisk uttryck renderer  KLAR
+
+I fysik uppgifter med rita diagram så ska vi ha 4 bilder som användaren kan välja mellan.
+
+
+
+
+PUGGA TEORI DELEN:
+
+Vi kommer anta att
+
+Användaren vet hur addition, subtraktion fungerar.
+
+Användaren vet hur division och multiplikation fungerar.
+
 
