@@ -12,11 +12,15 @@ function Navigation() {
   const { isLoggedIn, profilePic, logout } = useAuth()
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false)
 
-  const handleLogout = () => {
-    logout()
-    setShowLogoutConfirm(false)
-    navigate('/')
-  }
+  const handleLogout = async () => {
+    try {
+      await logout();
+      setShowLogoutConfirm(false);
+      navigate('/');
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+  };
 
   console.log('Navigation - isLoggedIn:', isLoggedIn, 'profilePic:', profilePic);
 

@@ -1,45 +1,124 @@
 import { createContext, useContext, useState, useEffect } from 'react';
+import { supabase } from '../lib/supabaseClient';
 
 const AuthContext = createContext();
 
-// Helper function to get initial state from localStorage
-const getInitialUser = () => {
-  const savedUser = localStorage.getItem('user');
-  return savedUser ? JSON.parse(savedUser) : null;
-};
-
-const getInitialProfilePic = () => {
-  const saved = localStorage.getItem('profilePic');
-  return (saved && saved.trim()) ? saved : null;
-};
-
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(getInitialUser);
-  const [profilePic, setProfilePic] = useState(getInitialProfilePic);
+  const [user, setUser] = useState(null);
+  const [profilePic, setProfilePic] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  const login = (userData, pic = null) => {
-    setUser(userData);
-    const validPic = (pic && pic.trim()) ? pic : null;
-    setProfilePic(validPic);
-    localStorage.setItem('user', JSON.stringify(userData));
-    if (validPic) {
-      localStorage.setItem('profilePic', validPic);
-    } else {
-      localStorage.removeItem('profilePic');
+  useEffect(() => {
+    // Check active session on mount
+    const initializeAuth = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session?.user) {
+          setUser(session.user);
+          // Get profile pic from user metadata if available
+          const pic = session.user.user_metadata?.picture || session.user.user_metadata?.avatar_url;
+          setProfilePic(pic || null);
+        }
+      } catch (error) {
+        console.error('Error initializing auth:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    initializeAuth();
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (session?.user) {
+        setUser(session.user);
+        const pic = session.user.user_metadata?.picture || session.user.user_metadata?.avatar_url;
+        setProfilePic(pic || null);
+
+        // Update last_login in profiles table
+        await supabase
+          .from('profiles')
+          .update({ last_login: new Date().toISOString() })
+          .eq('id', session.user.id);
+      } else {
+        setUser(null);
+        setProfilePic(null);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const loginWithGoogle = async () => {
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}/dashboard`
+      }
+    });
+    
+    if (error) {
+      console.error('Error logging in with Google:', error);
+      throw error;
     }
+    
+    return data;
   };
 
-  const logout = () => {
+  const loginWithEmail = async (email, password) => {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password
+    });
+
+    if (error) {
+      console.error('Error logging in with email:', error);
+      throw error;
+    }
+
+    return data;
+  };
+
+  const signUpWithEmail = async (email, password) => {
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        emailRedirectTo: `${window.location.origin}/dashboard`
+      }
+    });
+
+    if (error) {
+      console.error('Error signing up:', error);
+      throw error;
+    }
+
+    return data;
+  };
+
+  const logout = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      console.error('Error logging out:', error);
+      throw error;
+    }
     setUser(null);
     setProfilePic(null);
-    localStorage.removeItem('user');
-    localStorage.removeItem('profilePic');
   };
 
   const isLoggedIn = !!user;
 
   return (
-    <AuthContext.Provider value={{ user, isLoggedIn, profilePic, login, logout }}>
+    <AuthContext.Provider value={{ 
+      user, 
+      isLoggedIn, 
+      profilePic, 
+      loading,
+      loginWithGoogle,
+      loginWithEmail,
+      signUpWithEmail,
+      logout 
+    }}>
       {children}
     </AuthContext.Provider>
   );

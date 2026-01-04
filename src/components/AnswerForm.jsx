@@ -68,7 +68,7 @@ const MathInput = ({ questionNumber, onAnswerChange }) => {
   );
 };
 
-const AnswerForm = ({ subject, isFiltersCollapsed, onToggleCollapse }) => {
+const AnswerForm = ({ subject, isFiltersCollapsed, onToggleCollapse, onSubmit }) => {
   const [answers, setAnswers] = useState({});
   const numberOfQuestions = subject === 'MATEMATIK' ? 30 : 20;
 
@@ -155,7 +155,10 @@ const AnswerForm = ({ subject, isFiltersCollapsed, onToggleCollapse }) => {
       </div>
       
       <div className="p-6 border-t border-slate-200">
-        <button className="w-full px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-colors">
+        <button 
+          onClick={onSubmit}
+          className="w-full px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-colors"
+        >
           Lämna in
         </button>
       </div>

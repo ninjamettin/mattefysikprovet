@@ -18,6 +18,7 @@ const TestaDigSjalvPage = () => {
   const [editingPart, setEditingPart] = useState(null);
   const [editValue, setEditValue] = useState('');
   const [showExitConfirm, setShowExitConfirm] = useState(false);
+  const [showSubmitConfirm, setShowSubmitConfirm] = useState(false);
   
   const [examManifestUrl, setExamManifestUrl] = useState(null);
   
@@ -280,6 +281,13 @@ const TestaDigSjalvPage = () => {
     setIsTimerRunning(false);
   };
 
+  const handleSubmit = () => {
+    setSelectedExam(null);
+    setShowSubmitConfirm(false);
+    setRemainingTime(180 * 60);
+    setIsTimerRunning(false);
+  };
+
   if (!selectedExam) {
     return (
       <div className="min-h-screen bg-slate-50 pt-24 px-4 pb-12">
@@ -535,6 +543,32 @@ const TestaDigSjalvPage = () => {
         </div>
       )}
 
+      {/* Submit Confirmation Modal */}
+      {showSubmitConfirm && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl p-6 shadow-2xl max-w-md w-full animate-in fade-in zoom-in duration-200">
+            <h3 className="text-xl font-bold text-slate-900 mb-2">Är du säker på att du vill lämna in?</h3>
+            <p className="text-slate-600 mb-6">
+              Endast svarade frågor kommer att räknas åt din statistik.
+            </p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setShowSubmitConfirm(false)}
+                className="flex-1 px-4 py-2.5 font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors"
+              >
+                Avbryt
+              </button>
+              <button
+                onClick={handleSubmit}
+                className="flex-1 px-4 py-2.5 font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-xl transition-colors"
+              >
+                Lämna in
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* PDF Viewer Section */}
       <div className="flex-1 grid grid-cols-2 h-full">
         {/* Exam PDF */}
@@ -559,6 +593,7 @@ const TestaDigSjalvPage = () => {
             subject={subject} 
             isFiltersCollapsed={isFiltersCollapsed}
             onToggleCollapse={() => setIsFiltersCollapsed(!isFiltersCollapsed)}
+            onSubmit={() => setShowSubmitConfirm(true)}
           />
         </div>
       </div>
