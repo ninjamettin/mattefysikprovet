@@ -14,7 +14,9 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE TABLE IF NOT EXISTS profiles (
     id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
     email TEXT UNIQUE NOT NULL,
-    last_login TIMESTAMPTZ
+    last_login TIMESTAMPTZ,
+    is_paid BOOLEAN NOT NULL DEFAULT false,
+    subscription_start TIMESTAMPTZ
 );
 
 -- Create index on email for faster lookups

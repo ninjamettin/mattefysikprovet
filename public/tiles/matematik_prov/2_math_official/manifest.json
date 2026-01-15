@@ -1,0 +1,54 @@
+{
+  "pages": [
+    {
+      "page": 1,
+      "width": 1191,
+      "height": 1684,
+      "parts": [
+        "page_1_part_0.jpg",
+        "page_1_part_1.jpg",
+        "page_1_part_2.jpg"
+      ]
+    },
+    {
+      "page": 2,
+      "width": 1191,
+      "height": 1684,
+      "parts": [
+        "page_2_part_0.jpg",
+        "page_2_part_1.jpg",
+        "page_2_part_2.jpg"
+      ]
+    },
+    {
+      "page": 3,
+      "width": 1191,
+      "height": 1684,
+      "parts": [
+        "page_3_part_0.jpg",
+        "page_3_part_1.jpg",
+        "page_3_part_2.jpg"
+      ]
+    },
+    {
+      "page": 4,
+      "width": 1191,
+      "height": 1684,
+      "parts": [
+        "page_4_part_0.jpg",
+        "page_4_part_1.jpg",
+        "page_4_part_2.jpg"
+      ]
+    },
+    {
+      "page": 5,
+      "width": 1191,
+      "height": 1684,
+      "parts": [
+        "page_5_part_0.jpg",
+        "page_5_part_1.jpg",
+        "page_5_part_2.jpg"
+      ]
+    }
+  ]
+}

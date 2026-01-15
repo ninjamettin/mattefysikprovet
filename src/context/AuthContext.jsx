@@ -96,14 +96,45 @@ export const AuthProvider = ({ children }) => {
     return data;
   };
 
-  const logout = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) {
-      console.error('Error logging out:', error);
-      throw error;
+  const clearSupabaseSessionStorage = () => {
+    try {
+      if (typeof window !== 'undefined') {
+        Object.keys(window.localStorage || {}).forEach((key) => {
+          if (key.startsWith('sb-')) {
+            window.localStorage.removeItem(key);
+          }
+        });
+        Object.keys(window.sessionStorage || {}).forEach((key) => {
+          if (key.startsWith('sb-')) {
+            window.sessionStorage.removeItem(key);
+          }
+        });
+      }
+    } catch (storageErr) {
+      console.warn('Failed to clear Supabase session storage:', storageErr);
     }
-    setUser(null);
-    setProfilePic(null);
+  };
+
+  const withTimeout = async (promise, timeoutMs) => {
+    return Promise.race([
+      promise,
+      new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), timeoutMs))
+    ]);
+  };
+
+  const logout = async () => {
+    try {
+      // Attempt to sign out locally first to clear stored session
+      await withTimeout(supabase.auth.signOut({ scope: 'local' }), 3000);
+      // Also revoke refresh token to avoid lingering sessions
+      await withTimeout(supabase.auth.signOut({ scope: 'global' }), 3000);
+    } catch (error) {
+      console.warn('Supabase signOut encountered an issue (continuing anyway):', error);
+    } finally {
+      clearSupabaseSessionStorage();
+      setUser(null);
+      setProfilePic(null);
+    }
   };
 
   const isLoggedIn = !!user;

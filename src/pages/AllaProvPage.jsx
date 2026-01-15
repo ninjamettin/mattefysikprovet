@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { ChevronUp, ChevronDown, List, Eye, EyeOff, Play, Pause, RotateCcw } from 'lucide-react';
 import DeepZoomViewer from '../components/DeepZoomViewer';
+import { supabase } from '../lib/supabaseClient';
 
 const AllaProvPage = () => {
   const currentYear = new Date().getFullYear();
@@ -210,25 +211,43 @@ const AllaProvPage = () => {
 
 
 
-  // Calculate Manifest URL based on year
+  // Calculate Manifest URL based on year - directly construct path without database query
   const getManifestUrl = async (manifestType) => {
-    let folder;
-    let fileNumber;
-
-    if (type === 'VÅRA') {
-      folder = manifestType === 'exam' ? `${subject.toLowerCase()}_prov_vara` : `${subject.toLowerCase()}_losningar_vara`;
-      fileNumber = year;
-    } else {
-      folder = manifestType === 'exam' ? `${subject.toLowerCase()}_prov` : `${subject.toLowerCase()}_losningar`;
-      fileNumber = year - 2006;
-    }
-
-    const url = `/tiles/${folder}/${fileNumber}/manifest.json`;
-    
     try {
-      const response = await fetch(url, { method: 'HEAD' });
-      return response.ok ? url : null;
-    } catch {
+      // Construct the exam_id based on user selections
+      let examId;
+      
+      if (type === 'OFFICIELLA') {
+        // For official exams: {year-2006}_math_official or {year-2006}_physics_official
+        const fileNumber = year - 2006;
+        const subjectKey = subject === 'MATEMATIK' ? 'math' : 'physics';
+        examId = manifestType === 'exam' 
+          ? `${fileNumber}_${subjectKey}_official`
+          : `${fileNumber}_${subjectKey}_official_solutions`;
+      } else {
+        // For our own exams: {selectedNumber}_math_ours or {selectedNumber}_physics_ours
+        const subjectKey = subject === 'MATEMATIK' ? 'math' : 'physics';
+        examId = manifestType === 'exam'
+          ? `${year}_${subjectKey}_ours`
+          : `${year}_${subjectKey}_ours_solutions`;
+      }
+
+      // Construct the tile path directly
+      const subjectFolder = subject === 'MATEMATIK' ? 'matematik' : 'fysik';
+      const provOrLosningar = manifestType === 'exam' ? 'prov' : 'losningar';
+      
+      // Construct URL: /tiles/{subject}_{prov/losningar}/{examId}/manifest.json
+      const url = `/tiles/${subjectFolder}_${provOrLosningar}/${examId}/manifest.json`;
+      
+      // Verify the manifest file exists
+      try {
+        const response = await fetch(url, { method: 'HEAD' });
+        return response.ok ? url : null;
+      } catch (fetchError) {
+        return null;
+      }
+    } catch (error) {
+      console.error('[AllaProvPage] Error in getManifestUrl:', error);
       return null;
     }
   };

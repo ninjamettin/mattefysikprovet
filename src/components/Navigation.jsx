@@ -13,12 +13,14 @@ function Navigation() {
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false)
 
   const handleLogout = async () => {
+    console.log('handleLogout called in Navigation');
     try {
       await logout();
+      console.log('Logout successful in Navigation, closing modal and navigating');
       setShowLogoutConfirm(false);
       navigate('/');
     } catch (error) {
-      console.error('Logout error:', error);
+      console.error('Logout error in Navigation:', error);
     }
   };
 

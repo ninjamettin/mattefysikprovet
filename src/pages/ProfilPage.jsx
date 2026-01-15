@@ -7,10 +7,16 @@ const ProfilPage = () => {
   const navigate = useNavigate();
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
-  const handleLogout = () => {
-    logout();
-    setShowLogoutConfirm(false);
-    navigate('/');
+  const handleLogout = async () => {
+    console.log('handleLogout called in ProfilPage');
+    try {
+      await logout();
+      console.log('Logout successful, closing modal and navigating');
+      setShowLogoutConfirm(false);
+      navigate('/');
+    } catch (error) {
+      console.error('Logout error in ProfilPage:', error);
+    }
   };
 
   return (

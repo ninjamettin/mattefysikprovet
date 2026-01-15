@@ -1,0 +1,122 @@
+exam file naming convention:
+
+for official math exams we will have the names:
+
+1_math_official.pdf
+2_math_official.pdf
+…
+
+where 1 represents the official math exam from 2007 and 2 represents the official math exam from 2008 and so on.
+
+for our math exams we will have the names:
+
+1_math_ours.pdf
+2_math_ours.pdf
+…
+
+where 1 represents our own first constructed math exam and 2 represents our own second constructed math exam and so on.
+
+all of these will be in /src/assets/secure_pdfs/matematik_prov folder
+
+
+for official physics exams we will have the names:
+
+1_physics_official.pdf
+2_physics_official.pdf
+…
+
+where 1 represents the official physics exam from 2007 and 2 represents the official physics exam from 2008 and so on.
+
+for our physics exams we will have the names:
+
+1_physics_ours.pdf
+2_physics_ours.pdf
+…
+
+where 1 represents our own first constructed physics exam and 2 represents our own second constructed physics exam and so on.
+
+all of these will be in /src/assets/secure_pdfs/fysik_prov folder
+
+the solutions to all of these exams will be in the folders
+
+/src/assets/secure_pdfs/matematik_losningar
+and
+/src/assets/secure_pdfs/fysik_losningar
+
+where the solution pdf files have the same names as the exams but with the additional “_solutions” at the end of the file name.
+
+all math exams will always have 30 questions and all physics exams will always have 20 questions.
+
+exams table in the database:
+
+Columns:
+id: UUID, Primary Key.
+exam_id: Text, Unique (e.g., "MATH-2025-01").
+type: Text (e.g., "math" or "physics").
+correct_answers: Text (Long string of keys/LaTeX separated by commas).
+categories: Text (Long string of topic tags separated by commas, mapping 1:1 to answers).
+video_ids: Text
+exam_id is identical to the file name. example: “1_math_official.pdf”
+
+
+type is "math" or "physics".
+
+correct_answers is a long string of keys/LaTeX separated by commas. the answers can be read from here. example value a,b,c,d,\frac{-b\pm\sqrt{b^2-4ac}}{2a},4+\frac35\cdot\sin\left(2\right)
+
+when comparing with the users answers, all numbers should be calculated and letters should be left as they are. it is not the latex expressions in string that should be compared but the value it generates since a number with the same value can be expressed through multiple latex expressions. 
+
+categories column will have values like [[Algebra, Geometry], [Trigonometry], …]
+
+A list of lists where every list is an index for a question. A question might be involved in different topics. In this example we see that the first question is about algebra and geometry and the second question is about trigonometry.
+
+video_ids column will have a list of the video solution file names like “1” or “2”.
+
+example value: “1,2,3” and so on.
+
+
+The “Alla Prov” page should load the image tiles for an exam through following logic:
+
+The floating island will have selections: year, matematik/fysik, officiella/våra
+
+if officiella is chosen:
+
+then in the exams table the following pdf name should be found under exam_id column like
+
+“{year-2006}_{math/physics}_{official/ours}”
+
+this will be the name of the pdf file for the exam and the name for the solution file will be
+
+“{year-2006}_{math/physics}_{official/ours}_solutions”
+
+if våra is chosen:
+
+then in the exams table the following pdf name should be found under exam_id column like
+
+“{selectedNumberFromList}_{math/physics}_{official/ours}”
+
+this will be the name of the pdf file for the exam and the name for the solution file will be
+
+“{selectedNumberFromList}_{math/physics}_{official/ours}_solutions”
+
+it should be the tiles for these pdf files that should be loaded when the user selects from the Alla Prov page.
+
+Example
+
+floating island selections are:
+
+2007, matematik, officiella
+
+the exam pdf is
+
+1_math_official.pdf
+
+and the exam_id column value for this pdf is 1_math_official
+
+the solution pdf is
+
+1_math_official_solutions.pdf
+
+and the exam_id column value for this pdf is 1_math_official_solutions
+
+
+
